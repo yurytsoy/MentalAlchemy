@@ -1,0 +1,51 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:Generator.Controls" x:Class="Generator.MainWindow"
+        Title="MainWindow" Height="350" Width="525">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="30"></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+		</Grid.RowDefinitions>
+		<TabControl Visibility="Collapsed">
+			<TabItem Header="Neural Composer">
+				<Grid>
+					<Controls:ComposerControl></Controls:ComposerControl>
+				</Grid>
+			</TabItem>
+			<TabItem Header="Transition Table" Visibility="Collapsed">
+				<Grid>
+					<Controls:TransitionTableControl/>
+				</Grid>
+			</TabItem>
+		</TabControl>
+		
+		<ToolBarTray>
+			<ToolBar HorizontalAlignment="Left" VerticalAlignment="Top" Visibility="Collapsed">
+				<Button Name="LoadBtn">Load...</Button>
+				<Button Name="SaveBtn">Save...</Button>
+			</ToolBar>
+			<ToolBar HorizontalAlignment="Left">
+				<Button Name="TrainBtn" Click="TrainBtn_Click">Train</Button>
+				<Button Name="TrainSettingsBtn" Visibility="Collapsed">Settings...</Button>
+			</ToolBar>
+			<ToolBar>
+				<Label>Composition length</Label>
+				<TextBox Name="CompLengthBox" Width="42" TextAlignment="Right">30</TextBox>
+				<Button Click="ComposeBtn_Click">Compose</Button>
+			</ToolBar>
+			<ToolBar>
+				<Button Click="PlayOriginal_Click" Visibility="Collapsed">Play Original</Button>
+				<Button Click="PlayAnnBtn_Click">Play ANN</Button>
+				<Button Visibility="Collapsed">Play Both</Button>
+			</ToolBar>
+		</ToolBarTray>
+		
+		<TextBox Name="NotesBox" Grid.Row="1" Margin="3" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"></TextBox>
+		<!--<TextBox Name="AnnBox" Grid.Row="2" Margin="3" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"></TextBox>-->
+		
+		<ListBox Name="AnnListBox" Grid.Row="2" Margin="3"></ListBox>
+	</Grid>
+</Window>
