@@ -10,6 +10,7 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
+			MentalAlchemy.Tests.TestMusic.TestTransitionTable();
 		}
 	}
 }

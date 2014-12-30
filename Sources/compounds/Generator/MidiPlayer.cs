@@ -51,7 +51,27 @@ namespace Generator
 			outputDevice.SendControlChange(Channel.Channel1, MidiControl.SustainPedal, 0);
 			outputDevice.SendPitchBend(Channel.Channel1, 8192);
 
-			var args = new WorkerArgs() { Notes = notes, OutDevice = outputDevice };
+			var args = new WorkerArgs() { Notes = notes, Pitches = null, OutDevice = outputDevice };
+			_bgWorker.RunWorkerAsync(args);
+		}
+
+		public async void Play(Pitch[] pitches)
+		{
+			if (OutputDevice.InstalledDevices.Count == 0) return;
+
+			// Prompt user to choose an output device (or if there is only one, use that one).
+			OutputDevice outputDevice = OutputDevice.InstalledDevices[0];
+			if (!outputDevice.IsOpen)
+			{
+				outputDevice.Open();
+			}
+
+			outputDevice.SendProgramChange(Channel.Channel1, Instrument.ElectricPiano1);
+
+			outputDevice.SendControlChange(Channel.Channel1, MidiControl.SustainPedal, 0);
+			outputDevice.SendPitchBend(Channel.Channel1, 8192);
+
+			var args = new WorkerArgs() { Notes = null, Pitches = pitches, OutDevice = outputDevice };
 			_bgWorker.RunWorkerAsync(args);
 		}
 
@@ -79,17 +99,36 @@ namespace Generator
 				{
 					args.OutDevice.Open();
 				}
-				foreach (var note in args.Notes)
-				{
-					if ((worker.CancellationPending == true))
-					{
-						e.Cancel = true;
-						return;
-					}
 
-					args.OutDevice.SendNoteOn(Channel.Channel1, note.PitchInOctave(4), 80);
-					Thread.Sleep(300);
-					args.OutDevice.SendNoteOff(Channel.Channel1, note.PitchInOctave(4), 80);
+				if (args.Notes != null)
+				{
+					foreach (var note in args.Notes)
+					{
+						if ((worker.CancellationPending == true))
+						{
+							e.Cancel = true;
+							return;
+						}
+
+						args.OutDevice.SendNoteOn(Channel.Channel1, note.PitchInOctave(4), 80);
+						Thread.Sleep(300);
+						args.OutDevice.SendNoteOff(Channel.Channel1, note.PitchInOctave(4), 80);
+					}
+				}
+				else if (args.Pitches != null)
+				{
+					foreach (var pitch in args.Pitches)
+					{
+						if ((worker.CancellationPending == true))
+						{
+							e.Cancel = true;
+							return;
+						}
+
+						args.OutDevice.SendNoteOn(Channel.Channel1, pitch, 80);
+						Thread.Sleep(300);
+						args.OutDevice.SendNoteOff(Channel.Channel1, pitch, 80);
+					}
 				}
 				args.OutDevice.Close();
 			}
@@ -121,6 +160,7 @@ namespace Generator
 	class WorkerArgs
 	{
 		public Note[] Notes;
+		public Pitch[] Pitches;
 		public OutputDevice OutDevice;
 	}
 

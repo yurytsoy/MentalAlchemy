@@ -56,7 +56,7 @@ namespace Generator
 
 		private void PlayOriginal_Click(object sender, RoutedEventArgs e)
 		{
-			var rand = MusicUtils.Random(32);
+			var rand = MusicUtils.RandomFromOffsets(32);
 			_player.Play(rand);
 		}
 

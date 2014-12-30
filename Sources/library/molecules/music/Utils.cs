@@ -32,7 +32,7 @@ namespace MentalAlchemy.Molecules.Music
 			return "";
 		}
 
-		public static Note[] Random(int size)
+		public static Note[] RandomFromOffsets(int size)
 		{ 
 			var noteStr = new string [size];
 			for (int i = 0; i < size; ++i )
@@ -41,6 +41,23 @@ namespace MentalAlchemy.Molecules.Music
 			}
 			var res = ToMidi(noteStr);
 			return res;
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from 128 MIDI defined pitches.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Pitch[] RandomFromPitches(int size)
+		{
+			var pitchNames = Enum.GetNames(typeof (Pitch));
+			var pitches = new Pitch[size];
+			for (int i = 0; i < size; ++i)
+			{
+				var id = ContextRandom.Next(128);
+				pitches[i] = (Pitch)Enum.Parse(typeof(Pitch), pitchNames[id]);
+			}
+			return pitches;
 		}
 	}
 }

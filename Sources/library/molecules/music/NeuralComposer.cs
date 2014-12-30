@@ -38,12 +38,12 @@ namespace MentalAlchemy.Molecules.Music
 				state = _ann.UpdateOneStep (state);
 
 				// retreive nodes states.
-				var values = new float[state.Count];
-				var keys = new int[state.Count];
-				state.Keys.CopyTo(keys, 0);
-				state.Values.CopyTo(values, 0);
-				var idx = VectorMath.IndexOfMax(values, inputsOutputsCount);
-				var keyIdx = keys[ idx ];
+				var stateValues = new float[state.Count];
+				var stateKeys = new int[state.Count];
+				state.Keys.CopyTo(stateKeys, 0);
+				state.Values.CopyTo(stateValues, 0);
+				var idx = VectorMath.IndexOfMax(stateValues, inputsOutputsCount);
+				var keyIdx = stateKeys[ idx ];
 				state[0] = state[_ann.InputIds.Count];	// introduce output to the input.
 				state[keyIdx] = 0;	// reset the winner.
 				
