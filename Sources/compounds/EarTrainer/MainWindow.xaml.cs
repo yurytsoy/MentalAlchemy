@@ -23,6 +23,13 @@ namespace EarTrainer
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			DataContext = new MainWindowViewModel();
+		}
+
+		private void OnRenderFinished(object sender, RoutedEventArgs e)
+		{
+			// TODO
 		}
 	}
 }

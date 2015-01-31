@@ -61,6 +61,7 @@
     <Compile Include="atoms\Types.cs" />
     <Compile Include="atoms\Utils.cs" />
     <Compile Include="atoms\VectorMath.cs" />
+    <Compile Include="compounds\RelayCommand.cs" />
     <Compile Include="molecules\Distributions.cs" />
     <Compile Include="molecules\FileIO.cs" />
     <Compile Include="molecules\GraphElements.cs" />
@@ -99,9 +100,7 @@
   <ItemGroup>
     <None Include="docs\FlexibleNetwork2.pptx" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="compounds\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
