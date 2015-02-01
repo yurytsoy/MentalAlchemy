@@ -43,7 +43,7 @@ namespace Generator.Controls
 			Play(notes);
 		}
 
-		private void Play(Note[] notes)
+		private void Play(Midi.Note[] notes)
 		{
 			if (OutputDevice.InstalledDevices.Count == 0) return;
 

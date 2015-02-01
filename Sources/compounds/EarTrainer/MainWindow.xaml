@@ -15,7 +15,7 @@
 		</ToolBar>
 
 		<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
-			<atwpf:AlphaTabCanvas Grid.Row="1" Track="{Binding CurrentTrack}" RenderFinished="OnRenderFinished"></atwpf:AlphaTabCanvas>
+			<atwpf:AlphaTabCanvas x:Name="TabCanvas" Grid.Row="1" Track="{Binding CurrentTrack}" RenderFinished="OnRenderFinished"></atwpf:AlphaTabCanvas>
 		</ScrollViewer>
     </Grid>
 </Window>

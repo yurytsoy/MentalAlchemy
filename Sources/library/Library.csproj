@@ -89,7 +89,12 @@
     <Compile Include="molecules\machine learning\Types.cs" />
     <Compile Include="molecules\music\BaseComposer.cs" />
     <Compile Include="molecules\music\Const.cs" />
+    <Compile Include="molecules\music\Measure.cs" />
+    <Compile Include="molecules\music\MidiInstrument.cs" />
     <Compile Include="molecules\music\NeuralComposer.cs" />
+    <Compile Include="molecules\music\Note.cs" />
+    <Compile Include="molecules\music\Part.cs" />
+    <Compile Include="molecules\music\Score.cs" />
     <Compile Include="molecules\music\TransitionTableComposer.cs" />
     <Compile Include="molecules\music\Utils.cs" />
     <Compile Include="molecules\Numerics.cs" />

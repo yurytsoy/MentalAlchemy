@@ -1,4 +1,5 @@
-﻿using System;
+﻿using alphatab;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,11 +26,21 @@ namespace EarTrainer
 			InitializeComponent();
 
 			DataContext = new MainWindowViewModel();
+
 		}
 
 		private void OnRenderFinished(object sender, RoutedEventArgs e)
 		{
 			// TODO
+			var sets = TabCanvas.Settings;
+			//sets.
+			var st = TabCanvas.Settings.staves;
+			var tab = (StaveSettings)st.__a[18];
+			MessageBox.Show(sets.engine);
+			//tab.]
+
+			//global::haxe.lang.Runtime.toString();
+			var st2 = tab;
 		}
 	}
 }

@@ -7,12 +7,12 @@ namespace MentalAlchemy.Molecules.Music
 {
 	public static class MusicUtils
 	{
-		public static Note[] ToMidi (string[] notes)
+		public static Midi.Note[] ToMidi (string[] notes)
 		{
-			var res = new Note[notes.Length];
+			var res = new Midi.Note[notes.Length];
 			for (int i=0; i<notes.Length; ++i)
 			{
-				res [i] = new Note ( notes [i] );
+				res[i] = new Midi.Note(notes[i]);
 			}
 			return res;
 		}
@@ -32,7 +32,7 @@ namespace MentalAlchemy.Molecules.Music
 			return "";
 		}
 
-		public static Note[] RandomFromOffsets(int size)
+		public static Midi.Note[] RandomFromOffsets(int size)
 		{ 
 			var noteStr = new string [size];
 			for (int i = 0; i < size; ++i )

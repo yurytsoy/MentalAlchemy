@@ -105,6 +105,12 @@ namespace EarTrainer
 				// load the score from the filesystem
 				Score = ScoreLoader.loadScore(file);
 
+				//var tmpTrack = new Track();
+				//var bar = new Bar();
+				//bar.clef = Clef.G2;
+				//var tmpScore = new Score ();
+				
+
 				//// build the track info objects for the ui
 				//TrackViewModel[] trackInfos = new TrackViewModel[Score.tracks.length];
 				//for (int i = 0; i < trackInfos.Length; i++)
