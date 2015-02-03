@@ -37,6 +37,10 @@
     <Reference Include="AlphaTab.Core">
       <HintPath>..\..\bins\AlphaTab.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Midi, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>E:\Dropbox\Progs\mentalalchemy\bins\Midi.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />

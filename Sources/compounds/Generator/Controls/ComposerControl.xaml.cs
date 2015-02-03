@@ -20,6 +20,7 @@ using MentalAlchemy.Molecules.Music;
 using MidiControl = Midi.Control;
 using MusUtils = MentalAlchemy.Molecules.Music.MusicUtils;
 using System.ComponentModel;
+using Library.Compounds;
 //using Composer;
 
 namespace Generator.Controls

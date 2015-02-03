@@ -61,6 +61,7 @@
     <Compile Include="atoms\Types.cs" />
     <Compile Include="atoms\Utils.cs" />
     <Compile Include="atoms\VectorMath.cs" />
+    <Compile Include="compounds\MidiPlayer.cs" />
     <Compile Include="compounds\RelayCommand.cs" />
     <Compile Include="molecules\Distributions.cs" />
     <Compile Include="molecules\FileIO.cs" />

@@ -7,15 +7,32 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="30"></RowDefinition>
 			<RowDefinition></RowDefinition>
+			<RowDefinition></RowDefinition>
+			<RowDefinition Height="30"></RowDefinition>
 			<!--<RowDefinition></RowDefinition>-->
 		</Grid.RowDefinitions>
 		
 		<ToolBar>
-			<Button Command="{Binding OpenFileCommand}">Open...</Button>
+			<!--<Button Command="{Binding OpenFileCommand}">Open...</Button>-->
+			<Button Command="{Binding Generate}">Generate</Button>
+			<TextBox Width="60" Margin="3,0" Text="{Binding NotesLength}"></TextBox>
+			<Separator></Separator>
+			<Button Command="{Binding Play}">Play</Button>
+			<Separator></Separator>
+			<CheckBox IsChecked="{Binding ShowGeneratedNotes}" >Show generated notes</CheckBox>
+			<Separator></Separator>
+			<Button Command="{Binding Compare}" Visibility="Visible">Compare</Button>
 		</ToolBar>
 
-		<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+		<TextBox Name="NotesBox" Text="{Binding NotesText}" Grid.Row="1" IsReadOnly="True" Margin="3" TextWrapping="Wrap"></TextBox>
+		
+		<TextBox Name="InputBox" Text="{Binding UserNotesText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Grid.Row="2" Margin="3"></TextBox>
+		
+		<StatusBar Grid.Row="3" Background="White">
+			<Label Name="StatusLabel" Content="{Binding StatusText}"></Label>
+		</StatusBar>
+		<!--<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
 			<atwpf:AlphaTabCanvas x:Name="TabCanvas" Grid.Row="1" Track="{Binding CurrentTrack}" RenderFinished="OnRenderFinished"></atwpf:AlphaTabCanvas>
-		</ScrollViewer>
+		</ScrollViewer>-->
     </Grid>
 </Window>

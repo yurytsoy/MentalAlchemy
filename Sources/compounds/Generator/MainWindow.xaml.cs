@@ -19,6 +19,7 @@ using MentalAlchemy.Atoms;
 using MentalAlchemy.Molecules.Music;
 
 using MusUtils = MentalAlchemy.Molecules.Music.MusicUtils;
+using Library.Compounds;
 
 namespace Generator
 {

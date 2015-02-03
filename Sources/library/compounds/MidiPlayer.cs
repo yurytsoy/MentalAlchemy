@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Midi;
 using MidiControl = Midi.Control;
+using System.Threading;
 
-namespace Generator
+namespace Library.Compounds
 {
 	/// <summary>
 	/// TODO: Add Pause.
@@ -21,7 +21,7 @@ namespace Generator
 		public delegate void PlayCompleted();
 		public PlayCompleted OnWorkerCompleted { get; set; }
 
-		public bool IsBusy 
+		public bool IsBusy
 		{
 			get { return _bgWorker.IsBusy; }
 		}
@@ -163,5 +163,4 @@ namespace Generator
 		public Pitch[] Pitches;
 		public OutputDevice OutDevice;
 	}
-
 }

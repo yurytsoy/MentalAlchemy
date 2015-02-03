@@ -65,7 +65,6 @@
     <Compile Include="Controls\ComposerControl.xaml.cs" />
     <Compile Include="Controls\TransitionTableControl.xaml.cs" />
     <Compile Include="MainWindow.xaml.cs" />
-    <Compile Include="MidiPlayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
