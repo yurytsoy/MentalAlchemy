@@ -1,0 +1,28 @@
+﻿<Window x:Class="EarTrainer.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AboutWindow" Height="200" Width="300" WindowStartupLocation="CenterScreen" >
+    <Grid Margin="3">
+		<Grid.RowDefinitions>
+			<RowDefinition></RowDefinition>
+			<RowDefinition Height="36"></RowDefinition>
+		</Grid.RowDefinitions>
+		
+		<RichTextBox IsReadOnly="True" Margin="3">
+			<FlowDocument>
+				<Paragraph FontSize="16">
+					EarTrainer (c) 2015
+				</Paragraph>
+				<Paragraph>
+					The software uses the following libraries:
+					<LineBreak/>
+					<Hyperlink NavigateUri="http://github.com/yurytsoy/MentalAlchemy" RequestNavigate="Hyperlink_RequestNavigate">MentalAlchemy</Hyperlink>
+					<LineBreak/>
+					<Hyperlink NavigateUri="https://code.google.com/p/midi-dot-net/">midi-dot-net</Hyperlink>
+				</Paragraph>
+			</FlowDocument>
+		</RichTextBox>
+
+		<Button Grid.Row="1" HorizontalAlignment="Center" Width="60" Background="White" Click="CloseClick" Margin="3">Ok</Button>
+    </Grid>
+</Window>
