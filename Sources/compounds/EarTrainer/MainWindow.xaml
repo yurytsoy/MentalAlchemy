@@ -1,7 +1,7 @@
 ﻿<Window x:Class="EarTrainer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="MainWindow" Height="350" Width="525" WindowStartupLocation="CenterScreen">
+        Title="MainWindow" Height="350" Width="640" WindowStartupLocation="CenterScreen">
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="30"></RowDefinition>
@@ -16,16 +16,17 @@
 				<ColumnDefinition Width="4*"></ColumnDefinition>
 				<ColumnDefinition Width="1*"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
-			<ToolBar HorizontalAlignment="Left" Width="400">
+			<ToolBar HorizontalAlignment="Left" Width="540">
 				<!--<Button Command="{Binding OpenFileCommand}">Open...</Button>-->
-				<Button Command="{Binding Generate}">Generate</Button>
+				<ComboBox Margin="3,0" ItemsSource="{Binding TaskModes}" SelectedIndex="{Binding CurTaskModeIndex}" IsReadOnly="True" Width="90"/>
+				<Button Command="{Binding Generate}" Margin="3,0">Generate</Button>
 				<TextBox Width="60" Margin="3,0" Text="{Binding NotesLength}"></TextBox>
 				<Separator></Separator>
-				<Button Command="{Binding Play}">Play</Button>
+				<Button Command="{Binding Play}" Margin="3,0">Play</Button>
 				<Separator></Separator>
-				<CheckBox IsChecked="{Binding ShowGeneratedNotes}" >Show generated notes</CheckBox>
+				<CheckBox IsChecked="{Binding ShowGeneratedNotes}" Margin="3,0">Show generated notes</CheckBox>
 				<Separator></Separator>
-				<Button Command="{Binding Compare}" Visibility="Visible">Compare</Button>
+				<Button Command="{Binding Compare}" Visibility="Visible" Margin="3,0">Compare</Button>
 			</ToolBar>
 			
 			<Button Grid.Column="1" Command="{Binding About}" HorizontalAlignment="Right" Background="White" Margin="3" BorderBrush="{x:Null}">About...</Button>

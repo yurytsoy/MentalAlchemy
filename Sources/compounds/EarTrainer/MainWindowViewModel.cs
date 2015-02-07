@@ -22,6 +22,7 @@ using MentalAlchemy.Molecules.Music;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -157,7 +158,7 @@ namespace EarTrainer
 			}
 		}
 
-		public string _statusText = "";
+		string _statusText = "";
 		public string StatusText
 		{
 			get { return _statusText; }
@@ -168,6 +169,23 @@ namespace EarTrainer
 			}
 		}
 
+		ObservableCollection<string> _taskModes;
+		public ObservableCollection<string> TaskModes
+		{
+			get { return _taskModes; }
+		}
+
+		int _curTaskModeIndex;
+		public int CurTaskModeIndex
+		{
+			get { return _curTaskModeIndex; }
+			set 
+			{
+				_curTaskModeIndex = value;
+				OnPropertyChanged("CurTaskModeIndex");
+			}
+		}
+
 		public ICommand Generate { get; private set; }
 		public ICommand Play { get; private set; }
 		public ICommand Compare { get; private set; }
@@ -175,6 +193,20 @@ namespace EarTrainer
 
 		public MainWindowViewModel()
 		{
+			_taskModes = new ObservableCollection<string>();
+			_taskModes.Add(Tools.MODE_OCTAVE1_SIMPLE);
+			_taskModes.Add(Tools.MODE_POSITION1);
+			_taskModes.Add(Tools.MODE_POSITION2);
+			_taskModes.Add(Tools.MODE_POSITION3);
+			_taskModes.Add(Tools.MODE_POSITION4);
+			_taskModes.Add(Tools.MODE_STRING1);
+			_taskModes.Add(Tools.MODE_STRING2);
+			_taskModes.Add(Tools.MODE_STRING3);
+			_taskModes.Add(Tools.MODE_STRING4);
+			_taskModes.Add(Tools.MODE_STRING5);
+			_taskModes.Add(Tools.MODE_STRING6);
+			_curTaskModeIndex = 0;
+
 			Generate = new RelayCommand(GenerateNotes);
 			Play = new RelayCommand(PlayNotes);
 			Compare = new RelayCommand(CompareNotes);
@@ -184,8 +216,9 @@ namespace EarTrainer
 		public void GenerateNotes ()
 		{
 			int length = _notesLength;
+			string mode = _taskModes[_curTaskModeIndex];
 
-			_notes = MusicUtils.RandomFromOffsets(length);
+			_notes = GenerateNotes (mode, length);
 
 			_notesText = _notes[0].Letter.ToString ();
 			for (int i = 1; i < _notes.Length; ++i )
@@ -230,6 +263,15 @@ namespace EarTrainer
 		{
 			AboutWindow wnd = new AboutWindow();
 			wnd.ShowDialog();
+		}
+
+		protected Midi.Note[] GenerateNotes(string mode, int length)
+		{
+			if (mode == Tools.MODE_OCTAVE1_SIMPLE)
+			{
+				return MusicUtils.RandomFromOffsets(length);
+			}
+			throw new NotImplementedException();
 		}
 
 		protected string[] getUserNotes(string userText)
