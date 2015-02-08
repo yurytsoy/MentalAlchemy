@@ -2438,6 +2438,25 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
+		/// Returns collection of randomly picked elements from a given array.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="v"></param>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static T[] RandomSample<T>(T[] v, int size)
+		{
+			var res = new T[size];
+			for (int i = 0; i < size; ++i )
+			{
+				res[i] = v[ContextRandom.Next (v.Length)];
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
 		/// Returns random element from the given array.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>

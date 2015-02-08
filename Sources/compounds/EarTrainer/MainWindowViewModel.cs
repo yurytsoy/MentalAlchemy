@@ -109,7 +109,7 @@ namespace EarTrainer
 		//#endregion
 
 		MidiPlayer _player = new MidiPlayer();
-		Midi.Note[] _notes;
+		Midi.Pitch[] _notes;
 		string _separator = ",";
 
 		int _notesLength = 5;
@@ -194,17 +194,17 @@ namespace EarTrainer
 		public MainWindowViewModel()
 		{
 			_taskModes = new ObservableCollection<string>();
-			_taskModes.Add(Tools.MODE_OCTAVE1_SIMPLE);
-			_taskModes.Add(Tools.MODE_POSITION1);
-			_taskModes.Add(Tools.MODE_POSITION2);
-			_taskModes.Add(Tools.MODE_POSITION3);
-			_taskModes.Add(Tools.MODE_POSITION4);
+			_taskModes.Add(Tools.MODE_OCTAVE4_SIMPLE);
 			_taskModes.Add(Tools.MODE_STRING1);
 			_taskModes.Add(Tools.MODE_STRING2);
 			_taskModes.Add(Tools.MODE_STRING3);
 			_taskModes.Add(Tools.MODE_STRING4);
 			_taskModes.Add(Tools.MODE_STRING5);
 			_taskModes.Add(Tools.MODE_STRING6);
+			//_taskModes.Add(Tools.MODE_POSITION1);
+			//_taskModes.Add(Tools.MODE_POSITION2);
+			//_taskModes.Add(Tools.MODE_POSITION3);
+			//_taskModes.Add(Tools.MODE_POSITION4);
 			_curTaskModeIndex = 0;
 
 			Generate = new RelayCommand(GenerateNotes);
@@ -220,10 +220,11 @@ namespace EarTrainer
 
 			_notes = GenerateNotes (mode, length);
 
-			_notesText = _notes[0].Letter.ToString ();
-			for (int i = 1; i < _notes.Length; ++i )
+			//_notesText = _notes[0].Letter.ToString ();
+			_notesText = _notes[0].ToString();
+			for (int i = 1; i < _notes.Length; ++i)
 			{
-				_notesText += _separator + _notes[i].Letter;
+				_notesText += _separator + _notes[i].ToString();
 			}
 			NotesText = _notesText;
 		}
@@ -250,7 +251,9 @@ namespace EarTrainer
 			int errors = 0;
 			for (int i = 0; i < System.Math.Min (_notesLength, userNotesStr.Length); ++i )
 			{
-				if (_notes[i].Letter.ToString().ToLower() != userNotesStr[i].ToLower())
+				var notestr = _notes[i].ToString();
+				var note = notestr.Substring(0, notestr.Length - 1).ToLower();
+				if (note != userNotesStr[i].ToLower())
 				{
 					errors++;
 				}
@@ -265,11 +268,35 @@ namespace EarTrainer
 			wnd.ShowDialog();
 		}
 
-		protected Midi.Note[] GenerateNotes(string mode, int length)
+		protected Midi.Pitch[] GenerateNotes(string mode, int length)
 		{
-			if (mode == Tools.MODE_OCTAVE1_SIMPLE)
+			if (mode == Tools.MODE_OCTAVE4_SIMPLE)
 			{
-				return MusicUtils.RandomFromOffsets(length);
+				return MusicUtils.RandomPitchesOneLineOctaveSimple(length);
+			}
+			if (mode == Tools.MODE_STRING1)
+			{
+				return MusicUtils.RandomPitchesString1(length);
+			}
+			if (mode == Tools.MODE_STRING2)
+			{
+				return MusicUtils.RandomPitchesString2(length);
+			}
+			if (mode == Tools.MODE_STRING3)
+			{
+				return MusicUtils.RandomPitchesString3(length);
+			}
+			if (mode == Tools.MODE_STRING4)
+			{
+				return MusicUtils.RandomPitchesString4(length);
+			}
+			if (mode == Tools.MODE_STRING5)
+			{
+				return MusicUtils.RandomPitchesString5(length);
+			}
+			if (mode == Tools.MODE_STRING6)
+			{
+				return MusicUtils.RandomPitchesString6(length);
 			}
 			throw new NotImplementedException();
 		}

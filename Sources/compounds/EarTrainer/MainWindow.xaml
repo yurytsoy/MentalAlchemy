@@ -18,7 +18,7 @@
 			</Grid.ColumnDefinitions>
 			<ToolBar HorizontalAlignment="Left" Width="540">
 				<!--<Button Command="{Binding OpenFileCommand}">Open...</Button>-->
-				<ComboBox Margin="3,0" ItemsSource="{Binding TaskModes}" SelectedIndex="{Binding CurTaskModeIndex}" IsReadOnly="True" Width="90"/>
+				<ComboBox Margin="3,0" ItemsSource="{Binding TaskModes}" SelectedIndex="{Binding CurTaskModeIndex}" IsReadOnly="True" Width="120"/>
 				<Button Command="{Binding Generate}" Margin="3,0">Generate</Button>
 				<TextBox Width="60" Margin="3,0" Text="{Binding NotesLength}"></TextBox>
 				<Separator></Separator>

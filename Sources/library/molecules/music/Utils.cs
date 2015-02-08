@@ -65,16 +65,257 @@ namespace MentalAlchemy.Molecules.Music
 		/// </summary>
 		/// <param name="size"></param>
 		/// <returns></returns>
-		public static Pitch[] RandomFromPitches(int size)
+		public static Midi.Pitch[] RandomFromPitches(int size)
 		{
-			var pitchNames = Enum.GetNames(typeof (Pitch));
-			var pitches = new Pitch[size];
+			var pitchNames = Enum.GetNames(typeof (Midi.Pitch));
+			var pitches = new Midi.Pitch[size];
 			for (int i = 0; i < size; ++i)
 			{
-				var id = ContextRandom.Next(128);
-				pitches[i] = (Pitch)Enum.Parse(typeof(Pitch), pitchNames[id]);
+				var id = ContextRandom.Next(pitchNames.Length);
+				pitches[i] = (Midi.Pitch)Enum.Parse(typeof(Midi.Pitch), pitchNames[id]);
 			}
 			return pitches;
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 1st string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesOneLineOctaveSimple(int size)
+		{
+			var pitches = GetPitchesOneLineOctaveSimple();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 1st string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesString1(int size)
+		{
+			var pitches = GetPitchesString1 ();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 2nd string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesString2(int size)
+		{
+			var pitches = GetPitchesString2();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 3rd string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesString3(int size)
+		{
+			var pitches = GetPitchesString3();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 4th string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesString4(int size)
+		{
+			var pitches = GetPitchesString4();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 5th string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesString5(int size)
+		{
+			var pitches = GetPitchesString5();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the pitches corresponding to the 6th string of a guitar with std tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesString6(int size)
+		{
+			var pitches = GetPitchesString6();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		public static Midi.Pitch[] GetPitchesOneLineOctaveSimple()
+		{
+			var res = new Midi.Pitch[7];
+			res[0] = Midi.Pitch.C4;
+			res[1] = Midi.Pitch.D4;
+			res[2] = Midi.Pitch.E4;
+			res[3] = Midi.Pitch.F4;
+			res[4] = Midi.Pitch.G4;
+			res[5] = Midi.Pitch.A4;
+			res[6] = Midi.Pitch.B4;
+
+			return res;
+		}
+
+		/// <summary>
+		/// Returns pitches up to 12th fret (including open string) for the 1st string for the std tuning of guitar.
+		/// Sharps are used for the semitones.
+		/// </summary>
+		/// <returns></returns>
+		public static Midi.Pitch[] GetPitchesString1()
+		{
+			var res = new Midi.Pitch[13];
+			res[0] = Midi.Pitch.E4;
+			res[1] = Midi.Pitch.F4;
+			res[2] = Midi.Pitch.FSharp4;
+			res[3] = Midi.Pitch.G4;
+			res[4] = Midi.Pitch.GSharp4;
+			res[5] = Midi.Pitch.A4;
+			res[6] = Midi.Pitch.ASharp4;
+			res[7] = Midi.Pitch.B4;
+			res[8] = Midi.Pitch.C5;
+			res[9] = Midi.Pitch.CSharp5;
+			res[10] = Midi.Pitch.D5;
+			res[11] = Midi.Pitch.DSharp5;
+			res[12] = Midi.Pitch.E5;
+
+			return res;
+		}
+
+		/// <summary>
+		/// Returns pitches up to 12th fret (including open string) for the 2nd string for the std tuning of guitar.
+		/// Sharps are used for the semitones.
+		/// </summary>
+		/// <returns></returns>
+		public static Midi.Pitch[] GetPitchesString2()
+		{
+			var res = new Midi.Pitch[13];
+			res[0] = Midi.Pitch.B3;
+			res[1] = Midi.Pitch.C4;
+			res[2] = Midi.Pitch.CSharp4;
+			res[3] = Midi.Pitch.D4;
+			res[4] = Midi.Pitch.DSharp4;
+			res[5] = Midi.Pitch.E4;
+			res[6] = Midi.Pitch.F4;
+			res[7] = Midi.Pitch.FSharp4;
+			res[8] = Midi.Pitch.G4;
+			res[9] = Midi.Pitch.GSharp4;
+			res[10] = Midi.Pitch.A4;
+			res[11] = Midi.Pitch.ASharp4;
+			res[12] = Midi.Pitch.B4;
+
+			return res;
+		}
+
+		/// <summary>
+		/// Returns pitches up to 12th fret (including open string) for the 3rd string for the std tuning of guitar.
+		/// Sharps are used for the semitones.
+		/// </summary>
+		/// <returns></returns>
+		public static Midi.Pitch[] GetPitchesString3()
+		{
+			var res = new Midi.Pitch[13];
+			res[0] = Midi.Pitch.G3;
+			res[1] = Midi.Pitch.GSharp3;
+			res[2] = Midi.Pitch.A3;
+			res[3] = Midi.Pitch.ASharp3;
+			res[4] = Midi.Pitch.B3;
+			res[5] = Midi.Pitch.C4;
+			res[6] = Midi.Pitch.CSharp4;
+			res[7] = Midi.Pitch.D4;
+			res[8] = Midi.Pitch.DSharp4;
+			res[9] = Midi.Pitch.E4;
+			res[10] = Midi.Pitch.F4;
+			res[11] = Midi.Pitch.FSharp4;
+			res[12] = Midi.Pitch.G4;
+
+			return res;
+		}
+
+		/// <summary>
+		/// Returns pitches up to 12th fret (including open string) for the 4th string for the std tuning of guitar.
+		/// Sharps are used for the semitones.
+		/// </summary>
+		/// <returns></returns>
+		public static Midi.Pitch[] GetPitchesString4()
+		{
+			var res = new Midi.Pitch[13];
+			res[0] = Midi.Pitch.D3;
+			res[1] = Midi.Pitch.DSharp3;
+			res[2] = Midi.Pitch.E3;
+			res[3] = Midi.Pitch.F3;
+			res[4] = Midi.Pitch.FSharp3;
+			res[5] = Midi.Pitch.G3;
+			res[6] = Midi.Pitch.GSharp3;
+			res[7] = Midi.Pitch.A3;
+			res[8] = Midi.Pitch.ASharp3;
+			res[9] = Midi.Pitch.B3;
+			res[10] = Midi.Pitch.C4;
+			res[11] = Midi.Pitch.CSharp4;
+			res[12] = Midi.Pitch.D4;
+
+			return res;
+		}
+
+		/// <summary>
+		/// Returns pitches up to 12th fret (including open string) for the 5th string for the std tuning of guitar.
+		/// Sharps are used for the semitones.
+		/// </summary>
+		/// <returns></returns>
+		public static Midi.Pitch[] GetPitchesString5()
+		{
+			var res = new Midi.Pitch[13];
+			res[0] = Midi.Pitch.A2;
+			res[1] = Midi.Pitch.ASharp2;
+			res[2] = Midi.Pitch.B2;
+			res[3] = Midi.Pitch.C3;
+			res[4] = Midi.Pitch.CSharp3;
+			res[5] = Midi.Pitch.D3;
+			res[6] = Midi.Pitch.DSharp3;
+			res[7] = Midi.Pitch.E3;
+			res[8] = Midi.Pitch.F3;
+			res[9] = Midi.Pitch.FSharp3;
+			res[10] = Midi.Pitch.G3;
+			res[11] = Midi.Pitch.GSharp3;
+			res[12] = Midi.Pitch.A3;
+
+			return res;
+		}
+
+		/// <summary>
+		/// Returns pitches up to 12th fret (including open string) for the 5th string for the std tuning of guitar.
+		/// Sharps are used for the semitones.
+		/// </summary>
+		/// <returns></returns>
+		public static Midi.Pitch[] GetPitchesString6()
+		{
+			var res = new Midi.Pitch[13];
+			res[0] = Midi.Pitch.E2;
+			res[1] = Midi.Pitch.F2;
+			res[2] = Midi.Pitch.FSharp2;
+			res[3] = Midi.Pitch.G2;
+			res[4] = Midi.Pitch.GSharp2;
+			res[5] = Midi.Pitch.A2;
+			res[6] = Midi.Pitch.ASharp2;
+			res[7] = Midi.Pitch.B2;
+			res[8] = Midi.Pitch.C3;
+			res[9] = Midi.Pitch.CSharp3;
+			res[10] = Midi.Pitch.D3;
+			res[11] = Midi.Pitch.DSharp3;
+			res[12] = Midi.Pitch.E3;
+
+			return res;
 		}
 	}
 }

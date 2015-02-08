@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace EarTrainer
 {
+	/// <summary>
+	/// See octaves names here:
+	/// http://piano.about.com/od/lessons/ss/pitch-notation-systems_2.htm
+	/// </summary>
 	public class Tools
 	{
-		public const string MODE_OCTAVE1_SIMPLE = "Octave 1 (simple)";
+		public const string MODE_OCTAVE4_SIMPLE = "One line octave (simple)";
 		public const string MODE_STRING1 = "String 1";
 		public const string MODE_STRING2 = "String 2";
 		public const string MODE_STRING3 = "String 3";
