@@ -11,7 +11,7 @@
 		<RichTextBox IsReadOnly="True" Margin="3">
 			<FlowDocument>
 				<Paragraph FontSize="16">
-					EarTrainer (c) 2015
+					EarTrainer, v0.2.1 (c) 2015 Yury Tsoy
 				</Paragraph>
 				<Paragraph>
 					The software uses the following libraries:
@@ -20,7 +20,7 @@
 					<LineBreak/>
 					<Hyperlink NavigateUri="https://code.google.com/p/midi-dot-net/">midi-dot-net</Hyperlink>
 				</Paragraph>
-				<Paragraph>Icons from the Eldorado mini free set.</Paragraph>
+				<Paragraph>Icons: Eldorado mini free set.</Paragraph>
 			</FlowDocument>
 		</RichTextBox>
 
