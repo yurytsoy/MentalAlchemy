@@ -115,6 +115,18 @@
       <Name>Library</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\eye.png" />
+    <Resource Include="icons\libra.png" />
+    <Resource Include="icons\note.png" />
+    <Resource Include="icons\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\ear.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
