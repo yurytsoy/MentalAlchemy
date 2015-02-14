@@ -211,6 +211,8 @@ namespace EarTrainer
 			Play = new RelayCommand(PlayNotes);
 			Compare = new RelayCommand(CompareNotes);
 			About = new RelayCommand(AboutClick);
+
+			
 		}
 
 		public void GenerateNotes ()

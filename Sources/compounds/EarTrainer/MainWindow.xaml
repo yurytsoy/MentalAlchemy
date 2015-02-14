@@ -1,12 +1,18 @@
 ﻿<Window x:Class="EarTrainer.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="EarTrainer" Height="350" Width="520" WindowStartupLocation="CenterScreen" Icon="icons\ear.png" ResizeMode="NoResize">
+        Title="EarTrainer" Height="160" Width="420" WindowStartupLocation="CenterScreen" Icon="icons\ear.png" ResizeMode="NoResize">
+	
+	<!--<Window.CommandBindings>
+		<CommandBinding Command="{Binding MainWindow.GenerateCommand}">
+		</CommandBinding>
+	</Window.CommandBindings>-->
+	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="30"></RowDefinition>
-			<RowDefinition></RowDefinition>
-			<RowDefinition></RowDefinition>
+			<RowDefinition Height="30"></RowDefinition>
+			<RowDefinition Height="30"></RowDefinition>
 			<RowDefinition Height="30"></RowDefinition>
 			<!--<RowDefinition></RowDefinition>-->
 		</Grid.RowDefinitions>
@@ -14,9 +20,9 @@
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="4*"></ColumnDefinition>
-				<ColumnDefinition Width="80"></ColumnDefinition>
+				<ColumnDefinition Width="40"></ColumnDefinition>
 			</Grid.ColumnDefinitions>
-			<ToolBar HorizontalAlignment="Left" Width="400">
+			<ToolBar HorizontalAlignment="Left">
 				<!--<Button Command="{Binding OpenFileCommand}">Open...</Button>-->
 				<ComboBox Margin="3,0" ItemsSource="{Binding TaskModes}" SelectedIndex="{Binding CurTaskModeIndex}" IsReadOnly="True" Width="150"/>
 				<Button Command="{Binding Generate}" Margin="3,0" ToolTip="Generate">
@@ -42,11 +48,25 @@
 			</Button>
 		</Grid>
 
-		<TextBox Name="NotesBox" Text="{Binding NotesText}" Grid.Row="1" IsReadOnly="True" Margin="3" TextWrapping="Wrap" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"/>
+		<Grid Grid.Row="1">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="120"></ColumnDefinition>
+				<ColumnDefinition></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Label>Generated sequence</Label>
+			<TextBox Name="NotesBox" Text="{Binding NotesText}" Grid.Column="1" IsReadOnly="True" Margin="3" TextWrapping="Wrap" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"/>
+		</Grid>
 
-		<TextBox Name="InputBox" Text="{Binding UserNotesText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Grid.Row="2" Margin="3" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"/>
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="120"></ColumnDefinition>
+				<ColumnDefinition></ColumnDefinition>
+			</Grid.ColumnDefinitions>
+			<Label>User input</Label>
+			<TextBox Name="InputBox" Text="{Binding UserNotesText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Grid.Column="1" Margin="3" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"/>
+		</Grid>
 
-		<StatusBar Grid.Row="3" Background="White">
+		<StatusBar Grid.Row="3" Background="White" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}">
 			<Label Name="StatusLabel" Content="{Binding StatusText}"></Label>
 		</StatusBar>
 		<!--<ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">

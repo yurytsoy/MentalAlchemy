@@ -37,26 +37,46 @@ namespace EarTrainer
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public static RoutedCommand GenerateCommand = new RoutedCommand();
+		MainWindowViewModel _vm;
+
 		public MainWindow()
 		{
 			InitializeComponent();
 
-			DataContext = new MainWindowViewModel();
+			_vm = new MainWindowViewModel();
+			DataContext = _vm;
 
+			RoutedCommand generateCmdBinding = new RoutedCommand();
+			generateCmdBinding.InputGestures.Add(new KeyGesture(Key.G, ModifierKeys.Control));
+			CommandBindings.Add(new CommandBinding(generateCmdBinding, Generate));
+
+			RoutedCommand compCmdBinding = new RoutedCommand();
+			compCmdBinding.InputGestures.Add(new KeyGesture(Key.M, ModifierKeys.Control));
+			CommandBindings.Add(new CommandBinding(compCmdBinding, Compare));
+
+			RoutedCommand playCmdBinding = new RoutedCommand();
+			playCmdBinding.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
+			CommandBindings.Add(new CommandBinding(playCmdBinding, Play));
+		}
+
+		private void Generate( object sender, ExecutedRoutedEventArgs e ) 
+		{
+			_vm.GenerateNotes();
+		}
+
+		private void Compare(object sender, ExecutedRoutedEventArgs e)
+		{
+			_vm.CompareNotes();
+		}
+
+		private void Play(object sender, ExecutedRoutedEventArgs e)
+		{
+			_vm.PlayNotes();
 		}
 
 		private void OnRenderFinished(object sender, RoutedEventArgs e)
 		{
-			// TODO
-			//var sets = TabCanvas.Settings;
-			////sets.
-			//var st = TabCanvas.Settings.staves;
-			//var tab = (StaveSettings)st.__a[18];
-			//MessageBox.Show(sets.engine);
-			//tab.]
-
-			//global::haxe.lang.Runtime.toString();
-			//var st2 = tab;
 		}
 	}
 }
