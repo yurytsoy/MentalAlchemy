@@ -109,7 +109,7 @@ namespace EarTrainer
 		//#endregion
 
 		MidiPlayer _player = new MidiPlayer();
-		Midi.Pitch[] _notes;
+		//Midi.Pitch[] _notes;
 		string _separator = ",";
 
 		int _notesLength = 5;
@@ -154,6 +154,7 @@ namespace EarTrainer
 			set 
 			{
 				_userNotesText = value;
+				//Global.SetUserNotesText (value);
 				OnPropertyChanged("UserNotesText");
 			}
 		}
@@ -220,24 +221,20 @@ namespace EarTrainer
 			int length = _notesLength;
 			string mode = _taskModes[_curTaskModeIndex];
 
-			_notes = GenerateNotes (mode, length);
+			Global.SetNotes (GenerateNotes(mode, length));
 
 			//_notesText = _notes[0].Letter.ToString ();
-			_notesText = _notes[0].ToString();
-			for (int i = 1; i < _notes.Length; ++i)
-			{
-				_notesText += _separator + _notes[i].ToString();
-			}
+			_notesText = MusicUtils.ToString (Global.Notes, _separator);
 			NotesText = _notesText;
 		}
 
 		public void PlayNotes()
 		{
-			if (_notes == null) return;
+			if (Global.Notes == null) return;
 
 			if (!_player.IsBusy)
 			{
-				_player.Play(_notes);
+				_player.Play(Global.Notes);
 			}
 			else
 			{
@@ -247,13 +244,14 @@ namespace EarTrainer
 
 		public void CompareNotes()
 		{
-			if (_userNotesText.Length == 0 || _notesText.Length == 0) return;
+			if (UserNotesText == null || UserNotesText.Length == 0 || _notesText.Length == 0) return;
 
-			var userNotesStr = getUserNotes(_userNotesText);
+			Global.SetUserNotesText(UserNotesText, addAnswer: true);
+			var userNotesStr = getUserNotes(UserNotesText);
 			int errors = 0;
 			for (int i = 0; i < System.Math.Min (_notesLength, userNotesStr.Length); ++i )
 			{
-				var notestr = _notes[i].ToString();
+				var notestr = Global.Notes[i].ToString();
 				var note = notestr.Substring(0, notestr.Length - 1).ToLower();
 				if (note != userNotesStr[i].ToLower())
 				{

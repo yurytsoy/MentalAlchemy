@@ -57,6 +57,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ComparisonResults.cs" />
+    <Compile Include="Global.cs" />
     <Compile Include="Tools.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>

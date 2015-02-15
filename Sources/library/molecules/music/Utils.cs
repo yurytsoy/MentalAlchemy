@@ -24,17 +24,18 @@ namespace MentalAlchemy.Molecules.Music
 {
 	public static class MusicUtils
 	{
-		public static Midi.Note[] ToMidi (string[] notes)
+		#region - Conversion. -
+		public static Midi.Note[] ToMidi(string[] notes)
 		{
 			var res = new Midi.Note[notes.Length];
-			for (int i=0; i<notes.Length; ++i)
+			for (int i = 0; i < notes.Length; ++i)
 			{
 				res[i] = new Midi.Note(notes[i]);
 			}
 			return res;
 		}
-		
-		public static string OffsetToNoteString (int offset)
+
+		public static string OffsetToNoteString(int offset)
 		{
 			switch (offset)
 			{
@@ -49,12 +50,24 @@ namespace MentalAlchemy.Molecules.Music
 			return "";
 		}
 
-		public static Midi.Note[] RandomFromOffsets(int size)
-		{ 
-			var noteStr = new string [size];
-			for (int i = 0; i < size; ++i )
+		public static string ToString(Midi.Pitch[] pitches, string separator = "\t")
+		{
+			var res = pitches[0].ToString();
+			for (int i = 1; i < pitches.Length; ++i)
 			{
-				noteStr[i] = OffsetToNoteString( ContextRandom.Next(7));
+				res += separator + pitches[i].ToString();
+			}
+			return res;
+		}
+		#endregion
+
+		#region - Generation. -
+		public static Midi.Note[] RandomFromOffsets(int size)
+		{
+			var noteStr = new string[size];
+			for (int i = 0; i < size; ++i)
+			{
+				noteStr[i] = OffsetToNoteString(ContextRandom.Next(7));
 			}
 			var res = ToMidi(noteStr);
 			return res;
@@ -67,7 +80,7 @@ namespace MentalAlchemy.Molecules.Music
 		/// <returns></returns>
 		public static Midi.Pitch[] RandomFromPitches(int size)
 		{
-			var pitchNames = Enum.GetNames(typeof (Midi.Pitch));
+			var pitchNames = Enum.GetNames(typeof(Midi.Pitch));
 			var pitches = new Midi.Pitch[size];
 			for (int i = 0; i < size; ++i)
 			{
@@ -95,7 +108,7 @@ namespace MentalAlchemy.Molecules.Music
 		/// <returns></returns>
 		public static Midi.Pitch[] RandomPitchesString1(int size)
 		{
-			var pitches = GetPitchesString1 ();
+			var pitches = GetPitchesString1();
 			return VectorMath.RandomSample(pitches, size);
 		}
 
@@ -152,8 +165,10 @@ namespace MentalAlchemy.Molecules.Music
 		{
 			var pitches = GetPitchesString6();
 			return VectorMath.RandomSample(pitches, size);
-		}
+		} 
+		#endregion
 
+		#region - Pitches reterival. -
 		public static Midi.Pitch[] GetPitchesOneLineOctaveSimple()
 		{
 			var res = new Midi.Pitch[7];
@@ -316,7 +331,8 @@ namespace MentalAlchemy.Molecules.Music
 			res[12] = Midi.Pitch.E3;
 
 			return res;
-		}
+		} 
+		#endregion
 	}
 }
 

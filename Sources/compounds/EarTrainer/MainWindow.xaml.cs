@@ -58,6 +58,10 @@ namespace EarTrainer
 			RoutedCommand playCmdBinding = new RoutedCommand();
 			playCmdBinding.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
 			CommandBindings.Add(new CommandBinding(playCmdBinding, Play));
+
+			RoutedCommand showCmdBinding = new RoutedCommand();
+			showCmdBinding.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
+			CommandBindings.Add(new CommandBinding(showCmdBinding, Show));
 		}
 
 		private void Generate( object sender, ExecutedRoutedEventArgs e ) 
@@ -73,6 +77,11 @@ namespace EarTrainer
 		private void Play(object sender, ExecutedRoutedEventArgs e)
 		{
 			_vm.PlayNotes();
+		}
+
+		private void Show(object sender, ExecutedRoutedEventArgs e)
+		{
+			_vm.ShowGeneratedNotes = !_vm.ShowGeneratedNotes;
 		}
 
 		private void OnRenderFinished(object sender, RoutedEventArgs e)
