@@ -196,16 +196,16 @@ namespace EarTrainer
 		{
 			_taskModes = new ObservableCollection<string>();
 			_taskModes.Add(Tools.MODE_OCTAVE4_SIMPLE);
+			_taskModes.Add(Tools.MODE_OCTAVE4);
+			_taskModes.Add(Tools.MODE_BOX_0_4);
+			_taskModes.Add(Tools.MODE_BOX_5_9);
+			_taskModes.Add(Tools.MODE_BOX_7_12);
 			_taskModes.Add(Tools.MODE_STRING1);
 			_taskModes.Add(Tools.MODE_STRING2);
 			_taskModes.Add(Tools.MODE_STRING3);
 			_taskModes.Add(Tools.MODE_STRING4);
 			_taskModes.Add(Tools.MODE_STRING5);
 			_taskModes.Add(Tools.MODE_STRING6);
-			//_taskModes.Add(Tools.MODE_POSITION1);
-			//_taskModes.Add(Tools.MODE_POSITION2);
-			//_taskModes.Add(Tools.MODE_POSITION3);
-			//_taskModes.Add(Tools.MODE_POSITION4);
 			_curTaskModeIndex = 0;
 
 			Generate = new RelayCommand(GenerateNotes);
@@ -273,6 +273,22 @@ namespace EarTrainer
 			if (mode == Tools.MODE_OCTAVE4_SIMPLE)
 			{
 				return MusicUtils.RandomPitchesOneLineOctaveSimple(length);
+			}
+			if (mode == Tools.MODE_OCTAVE4)
+			{
+				return MusicUtils.RandomPitchesOneLineOctave(length);
+			}
+			if (mode == Tools.MODE_BOX_0_4)
+			{
+				return MusicUtils.RandomPitchesBox04Simple(length);
+			}
+			if (mode == Tools.MODE_BOX_5_9)
+			{
+				return MusicUtils.RandomPitchesBox59Simple(length);
+			}
+			if (mode == Tools.MODE_BOX_7_12)
+			{
+				return MusicUtils.RandomPitchesBox712Simple(length);
 			}
 			if (mode == Tools.MODE_STRING1)
 			{

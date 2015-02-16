@@ -25,6 +25,9 @@ namespace EarTrainer
 		public const string MODE_OCTAVE4 = "Octave 4";
 		public const string MODE_OCTAVE5 = "Octave 5";
 		public const string MODE_OCTAVE6 = "Octave 6";
+		public const string MODE_BOX_0_4 = "Box 0-4";
+		public const string MODE_BOX_5_9 = "Box 5-9";
+		public const string MODE_BOX_7_12 = "Box 7-12";
 		public const string MODE_POSITION1 = "Position 1";
 		public const string MODE_POSITION2 = "Position 2";
 		public const string MODE_POSITION3 = "Position 3";

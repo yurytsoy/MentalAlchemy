@@ -54,9 +54,10 @@ namespace EarTrainer
 			RoutedCommand compCmdBinding = new RoutedCommand();
 			compCmdBinding.InputGestures.Add(new KeyGesture(Key.M, ModifierKeys.Control));
 			CommandBindings.Add(new CommandBinding(compCmdBinding, Compare));
-
+			
 			RoutedCommand playCmdBinding = new RoutedCommand();
 			playCmdBinding.InputGestures.Add(new KeyGesture(Key.P, ModifierKeys.Control));
+			playCmdBinding.InputGestures.Add(new KeyGesture(Key.Space, ModifierKeys.Control));
 			CommandBindings.Add(new CommandBinding(playCmdBinding, Play));
 
 			RoutedCommand showCmdBinding = new RoutedCommand();

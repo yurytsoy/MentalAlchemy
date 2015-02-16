@@ -91,13 +91,57 @@ namespace MentalAlchemy.Molecules.Music
 		}
 
 		/// <summary>
-		/// Generates random collection, composed from elements from the pitches corresponding to the 1st string of a guitar with std tuning.
+		/// Generates random collection, composed from elements from the one line octave without alterations.
 		/// </summary>
 		/// <param name="size"></param>
 		/// <returns></returns>
 		public static Midi.Pitch[] RandomPitchesOneLineOctaveSimple(int size)
 		{
 			var pitches = GetPitchesOneLineOctaveSimple();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements from the one line octave.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesOneLineOctave(int size)
+		{
+			var pitches = GetPitchesOneLineOctave();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements correspondent to the box from fret 0 to fret 4 for the guitar with standard tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesBox04Simple(int size)
+		{
+			var pitches = GetPitchesBox04Simple();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements correspondent to the box from fret 5 to fret 9 for the guitar with standard tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesBox59Simple(int size)
+		{
+			var pitches = GetPitchesBox59Simple();
+			return VectorMath.RandomSample(pitches, size);
+		}
+
+		/// <summary>
+		/// Generates random collection, composed from elements correspondent to the box from fret 7 to fret 12 for the guitar with standard tuning.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] RandomPitchesBox712Simple(int size)
+		{
+			var pitches = GetPitchesBox712Simple();
 			return VectorMath.RandomSample(pitches, size);
 		}
 
@@ -179,6 +223,97 @@ namespace MentalAlchemy.Molecules.Music
 			res[4] = Midi.Pitch.G4;
 			res[5] = Midi.Pitch.A4;
 			res[6] = Midi.Pitch.B4;
+
+			return res;
+		}
+
+		public static Midi.Pitch[] GetPitchesOneLineOctave()
+		{
+			var res = new Midi.Pitch[12];
+			res[0] = Midi.Pitch.C4;
+			res[1] = Midi.Pitch.CSharp4;
+			res[2] = Midi.Pitch.D4;
+			res[3] = Midi.Pitch.DSharp4;
+			res[4] = Midi.Pitch.E4;
+			res[5] = Midi.Pitch.F4;
+			res[6] = Midi.Pitch.FSharp4;
+			res[7] = Midi.Pitch.G4;
+			res[8] = Midi.Pitch.GSharp4;
+			res[9] = Midi.Pitch.A4;
+			res[10] = Midi.Pitch.ASharp4;
+			res[11] = Midi.Pitch.B4;
+
+			return res;
+		}
+
+		public static Midi.Pitch[] GetPitchesBox04Simple()
+		{
+			var res = new Midi.Pitch[16];
+			res[0] = Midi.Pitch.E2;
+			res[1] = Midi.Pitch.F2;
+			res[2] = Midi.Pitch.G2;
+			res[3] = Midi.Pitch.A2;
+			res[4] = Midi.Pitch.B2;
+			res[5] = Midi.Pitch.C3;
+			res[6] = Midi.Pitch.D3;
+			res[7] = Midi.Pitch.E3;
+			res[8] = Midi.Pitch.F3;
+			res[9] = Midi.Pitch.G3;
+			res[10] = Midi.Pitch.A3;
+			res[11] = Midi.Pitch.B3;
+			res[12] = Midi.Pitch.C4;
+			res[13] = Midi.Pitch.D4;
+			res[14] = Midi.Pitch.E4;
+			res[15] = Midi.Pitch.F4;
+
+			return res;
+		}
+
+		public static Midi.Pitch[] GetPitchesBox59Simple()
+		{
+			var res = new Midi.Pitch[17];
+			res[0] = Midi.Pitch.A2;
+			res[1] = Midi.Pitch.B2;
+			res[2] = Midi.Pitch.C3;
+			res[3] = Midi.Pitch.D3;
+			res[4] = Midi.Pitch.E3;
+			res[5] = Midi.Pitch.F3;
+			res[6] = Midi.Pitch.G3;
+			res[7] = Midi.Pitch.A3;
+			res[8] = Midi.Pitch.B3;
+			res[9] = Midi.Pitch.C4;
+			res[10] = Midi.Pitch.D4;
+			res[11] = Midi.Pitch.E4;
+			res[12] = Midi.Pitch.F4;
+			res[13] = Midi.Pitch.G4;
+			res[14] = Midi.Pitch.A4;
+			res[15] = Midi.Pitch.B4;
+			res[16] = Midi.Pitch.C5;
+
+			return res;
+		}
+
+		public static Midi.Pitch[] GetPitchesBox712Simple()
+		{
+			var res = new Midi.Pitch[18];
+			res[0] = Midi.Pitch.B2;
+			res[1] = Midi.Pitch.C3;
+			res[2] = Midi.Pitch.D3;
+			res[3] = Midi.Pitch.E3;
+			res[4] = Midi.Pitch.F3;
+			res[5] = Midi.Pitch.G3;
+			res[6] = Midi.Pitch.A3;
+			res[7] = Midi.Pitch.B3;
+			res[8] = Midi.Pitch.C4;
+			res[9] = Midi.Pitch.D4;
+			res[10] = Midi.Pitch.E4;
+			res[11] = Midi.Pitch.F4;
+			res[12] = Midi.Pitch.G4;
+			res[13] = Midi.Pitch.A4;
+			res[14] = Midi.Pitch.B4;
+			res[15] = Midi.Pitch.C5;
+			res[16] = Midi.Pitch.D5;
+			res[17] = Midi.Pitch.E5;
 
 			return res;
 		}
