@@ -11,10 +11,10 @@
 		<RichTextBox IsReadOnly="True" Margin="3">
 			<FlowDocument>
 				<Paragraph FontSize="16">
-					EarTrainer, v0.2.1 (c) 2015 Yury Tsoy
+					EarTrainer, v0.3 (c) 2015 Yury Tsoy
 				</Paragraph>
 				<Paragraph>
-					The software uses the following libraries:
+					The following libraries are used:
 					<LineBreak/>
 					<Hyperlink NavigateUri="http://github.com/yurytsoy/MentalAlchemy" RequestNavigate="Hyperlink_RequestNavigate">MentalAlchemy</Hyperlink>
 					<LineBreak/>
