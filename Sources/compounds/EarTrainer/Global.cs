@@ -21,6 +21,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using MentalAlchemy.Molecules.Music;
+
 namespace EarTrainer
 {
 	/// <summary>
@@ -36,13 +38,18 @@ namespace EarTrainer
 		public static void SetNotes(Midi.Pitch[] notes)
 		{
 			Notes = notes;
-			Logger.AddNewSession(notes);
+			Logger.AddNewTask(notes);
 		}
 
 		public static void SetUserNotesText (string userText, bool addAnswer = false)
 		{
 			UserNotesText = userText;
-			if (addAnswer) Logger.AddUserAnswersToTheCurrentSession (UserNotesText);
+			if (addAnswer) 
+			{
+				// convert to the notes.
+				var pitches = MusicUtils.ToPitches(userText);
+				Logger.AddUserAnswersToTheCurrentTask(pitches);
+			}
 		}
 	}
 }

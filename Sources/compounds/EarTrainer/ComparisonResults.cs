@@ -32,28 +32,40 @@ namespace EarTrainer
 		public Midi.Pitch UserNote;
 	}
 
-	public class Session
+	public class Task
 	{
 		public DateTime Start;
 		public Midi.Pitch[] Notes;
-		public List<string> UserInputs = new List<string> ();
+		public List<UserAnswer> UserInputs = new List<UserAnswer>();
 
 		public string[] ToStrings()
 		{
 			var res = new List<string>();
-			res.Add("Session start:\t" + Start.ToShortDateString ());
+			res.Add("Task start:\t" + Start.ToShortDateString ());
 			res.Add("Generated sequence:\t" + MusicUtils.ToString(Notes));
-			foreach (var str in UserInputs)
+			foreach (var answer in UserInputs)
 			{
-				res.Add(str);
+				res.Add(answer.ToString ());
 			}
 			return res.ToArray();
 		}
 	}
 
+	public class UserAnswer
+	{
+		public Midi.Pitch[] Notes;
+		public DateTime Time;
+
+		public override string ToString()
+		{
+			var res = Time.ToShortDateString () + "\t" + MusicUtils.ToString(Notes);
+			return res;
+		}
+	}
+
 	public class UserAnswersLogger
 	{
-		List<Session> _sessions = new List<Session> ();
+		List<Task> _tasks = new List<Task> ();
 		string _filename;
 
 		public UserAnswersLogger(string filename) 
@@ -61,16 +73,25 @@ namespace EarTrainer
 			_filename = filename;
 		}
 
-		public void AddNewSession(Midi.Pitch[] notes)
+		public void AddNewTask(Midi.Pitch[] notes)
 		{
-			var newSession = new Session() { Notes = notes, Start = DateTime.Now };
-			_sessions.Add(newSession);
+			var newTask = new Task() { Notes = notes, Start = DateTime.Now };
+			_tasks.Add(newTask);
 		}
 
-		public void AddUserAnswersToTheCurrentSession(string answers)
+		//public void AddUserAnswersToTheCurrentTask(string answer)
+		//{
+		//	var curTask = _tasks.Last();
+		//	curTask.UserInputs.Add(answer);
+		//}
+
+		public void AddUserAnswersToTheCurrentTask(Midi.Pitch[] notes)
 		{
-			var curSession = _sessions.Last();
-			curSession.UserInputs.Add(answers);
+			var curSession = _tasks.Last();
+			var answer = new UserAnswer();
+			answer.Notes = notes;
+			answer.Time = DateTime.Now;
+			curSession.UserInputs.Add(answer);
 		}
 
 		/// <summary>

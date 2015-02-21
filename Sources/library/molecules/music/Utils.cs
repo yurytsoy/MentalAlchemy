@@ -16,6 +16,7 @@
 *************************************************************************/
 
 using System;
+using System.Collections.Generic;
 
 using Midi;
 using MentalAlchemy.Atoms;
@@ -25,6 +26,80 @@ namespace MentalAlchemy.Molecules.Music
 	public static class MusicUtils
 	{
 		#region - Conversion. -
+		/// <summary>
+		/// Converts given string to a collection of pitches.
+		/// The string assumes that pitches are separated by either [separator] or space.
+		/// Alternatively the pitches can be written as one-character-notes from a set {C, D, ..., B}.
+		/// </summary>
+		/// <param name="notes"></param>
+		/// <param name="defaultOctave"></param>
+		/// <param name="separator"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] ToPitches(string notes, int defaultOctave = 4, string separator = ",")
+		{
+			string[] noteArray;
+			#region - Split original input into separated pitches. -
+			if (notes.Contains(separator))
+			{
+				noteArray = notes.Split(separator[0]);
+			}
+			else if (notes.Contains(" "))
+			{
+				noteArray = notes.Split(' ');
+			}
+			else
+			{
+				// else parse the text as a continuous string.
+				var tmp = new List<string>();
+				for (int i = 0; i < notes.Length; ++i)
+				{	// TODO: fix to enable recognition of pitches, like "A4", "D2", etc.
+					tmp.Add(notes[i].ToString());
+				}
+				noteArray = tmp.ToArray();
+			} 
+			#endregion
+
+			#region - Standardize pitches for the [Midi.Pitch] data type. -
+			// reference: Midi.Pitch.A0;
+			// reference: Midi.Pitch.ASharp5;
+			for (int i = 0; i < noteArray.Length; ++i )
+			{
+				var cur = noteArray[i];
+				cur = cur.Trim();	// remove extra spaces.
+
+				// enforce capital first letter.
+				var first = cur[0] + "";
+				cur = cur.Remove(0, 1);
+				cur = cur.Insert(0, first.ToUpper());
+
+				// enforce "Sharp".
+				if (cur.ToLower().Contains ("sharp"))
+				{
+					cur = cur.Remove(1, 5);
+					cur = cur.Insert(1, "Sharp");
+				}
+
+				// TODO: process flats.
+
+				// check if a pitch has a number at the end.
+				var last = cur[cur.Length - 1];
+				if (!char.IsDigit (last))
+				{
+					cur += defaultOctave;
+				}
+				noteArray[i] = cur;
+			}
+			#endregion
+
+			var res = new Midi.Pitch[noteArray.Length];
+			for (int i = 0; i < noteArray.Length; ++i )
+			{
+				res[i] = (Midi.Pitch)Enum.Parse(typeof(Midi.Pitch), noteArray[i]);
+			}
+
+			return res;
+		}
+
 		public static Midi.Note[] ToMidi(string[] notes)
 		{
 			var res = new Midi.Note[notes.Length];

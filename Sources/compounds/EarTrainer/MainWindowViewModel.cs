@@ -189,6 +189,7 @@ namespace EarTrainer
 
 		public ICommand Generate { get; private set; }
 		public ICommand Play { get; private set; }
+		public ICommand PlayUser { get; private set; }
 		public ICommand Compare { get; private set; }
 		public ICommand About { get; private set; }
 
@@ -210,6 +211,7 @@ namespace EarTrainer
 
 			Generate = new RelayCommand(GenerateNotes);
 			Play = new RelayCommand(PlayNotes);
+			PlayUser = new RelayCommand(PlayUserNotes);
 			Compare = new RelayCommand(CompareNotes);
 			About = new RelayCommand(AboutClick);
 
@@ -235,6 +237,21 @@ namespace EarTrainer
 			if (!_player.IsBusy)
 			{
 				_player.Play(Global.Notes);
+			}
+			else
+			{
+				_player.Stop();
+			}
+		}
+
+		public void PlayUserNotes()
+		{
+			if (UserNotesText == null) return;
+
+			var userNotes = MusicUtils.ToPitches(UserNotesText);
+			if (!_player.IsBusy)
+			{
+				_player.Play(userNotes);
 			}
 			else
 			{

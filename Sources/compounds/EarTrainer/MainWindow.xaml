@@ -33,6 +33,9 @@
 				<Button Command="{Binding Play}" Margin="3,0" Background="Transparent" ToolTip="Play">
 					<Image Source="icons\play.png"></Image>
 				</Button>
+				<Button Command="{Binding PlayUser}" Margin="3,0" Background="Transparent" ToolTip="Play User Input">
+					<Image Source="icons\user.png"></Image>
+				</Button>
 				<Separator></Separator>
 				<CheckBox IsChecked="{Binding ShowGeneratedNotes}" Margin="3,0" ToolTip="Show generated notes">
 					<Image Source="icons\eye.png"></Image>

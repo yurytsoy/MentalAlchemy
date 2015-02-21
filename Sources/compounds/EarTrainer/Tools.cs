@@ -22,7 +22,7 @@ namespace EarTrainer
 		public const string MODE_OCTAVE1 = "Octave 1";
 		public const string MODE_OCTAVE2 = "Octave 2";
 		public const string MODE_OCTAVE3 = "Octave 3";
-		public const string MODE_OCTAVE4 = "Octave 4";
+		public const string MODE_OCTAVE4 = "One line octave";
 		public const string MODE_OCTAVE5 = "Octave 5";
 		public const string MODE_OCTAVE6 = "Octave 6";
 		public const string MODE_BOX_0_4 = "Box 0-4";
