@@ -108,6 +108,8 @@ namespace EarTrainer
 		//} 
 		//#endregion
 
+		const string HISTORY_FILENAME = "history.log";
+
 		MidiPlayer _player = new MidiPlayer();
 		//Midi.Pitch[] _notes;
 		string _separator = ",";
@@ -218,6 +220,16 @@ namespace EarTrainer
 			
 		}
 
+		public void LoadHistory()
+		{
+			// TODO
+		}
+
+		public void SaveHistory()
+		{
+ 			// TODO
+		}
+
 		public void GenerateNotes ()
 		{
 			int length = _notesLength;
@@ -248,15 +260,19 @@ namespace EarTrainer
 		{
 			if (UserNotesText == null) return;
 
-			var userNotes = MusicUtils.ToPitches(UserNotesText);
-			if (!_player.IsBusy)
+			try
 			{
-				_player.Play(userNotes);
+				var userNotes = MusicUtils.ToPitches(UserNotesText);
+				if (!_player.IsBusy)
+				{
+					_player.Play(userNotes);
+				}
+				else
+				{
+					_player.Stop();
+				}
 			}
-			else
-			{
-				_player.Stop();
-			}
+			catch { }
 		}
 
 		public void CompareNotes()

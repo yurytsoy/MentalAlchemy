@@ -67,6 +67,9 @@ namespace EarTrainer
 			RoutedCommand showCmdBinding = new RoutedCommand();
 			showCmdBinding.InputGestures.Add(new KeyGesture(Key.S, ModifierKeys.Control));
 			CommandBindings.Add(new CommandBinding(showCmdBinding, Show));
+
+			// load history.
+			_vm.LoadHistory();
 		}
 
 		private void Generate( object sender, ExecutedRoutedEventArgs e ) 
@@ -96,6 +99,14 @@ namespace EarTrainer
 
 		private void OnRenderFinished(object sender, RoutedEventArgs e)
 		{
+		}
+
+		private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			// finalize.
+
+			// TODO: save history.
+			_vm.SaveHistory();
 		}
 	}
 }

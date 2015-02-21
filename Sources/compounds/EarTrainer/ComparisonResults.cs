@@ -32,6 +32,7 @@ namespace EarTrainer
 		public Midi.Pitch UserNote;
 	}
 
+	[Serializable]
 	public class Task
 	{
 		public DateTime Start;
@@ -51,6 +52,7 @@ namespace EarTrainer
 		}
 	}
 
+	[Serializable]
 	public class UserAnswer
 	{
 		public Midi.Pitch[] Notes;
