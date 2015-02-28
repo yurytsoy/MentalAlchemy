@@ -11,7 +11,7 @@
 		<RichTextBox IsReadOnly="True" Margin="3">
 			<FlowDocument>
 				<Paragraph FontSize="16">
-					EarTrainer, v0.3 (c) 2015 Yury Tsoy
+					EarTrainer, v0.3.5 (c) 2015 Yury Tsoy
 				</Paragraph>
 				<Paragraph>
 					The following libraries are used:
