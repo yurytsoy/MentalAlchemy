@@ -295,17 +295,24 @@ namespace EarTrainer
 			registerUserInput();
 
 			//var userNotesStr = getUserNotes(UserNotesText);
-			var userNotes = Global.Logger.LastUserAnswer.Notes;
-			int errors = 0;
-			for (int i = 0; i < System.Math.Min (_notesLength, userNotes.Length); ++i )
+			try 
 			{
-				if (Global.Notes[i] != userNotes[i])
+				var userNotes = Global.Logger.LastUserAnswer.Notes;
+				int errors = 0;
+				for (int i = 0; i < System.Math.Min(_notesLength, userNotes.Length); ++i)
 				{
-					errors++;
+					if (Global.Notes[i] != userNotes[i])
+					{
+						errors++;
+					}
 				}
+				errors += System.Math.Abs(_notesLength - userNotes.Length);
+				StatusText = "Errors count: " + errors;
 			}
-			errors += System.Math.Abs(_notesLength - userNotes.Length);
-			StatusText = "Errors count: " + errors;
+			catch (Exception ex)
+			{
+				MessageBox.Show("Please check the user input format (ref: C or C4 or CSharp4)");
+			}
 		}
 
 		protected void registerTask(Midi.Pitch[] notes)
