@@ -19,6 +19,7 @@
 using Library.Compounds;
 using MentalAlchemy.Atoms;
 using MentalAlchemy.Molecules.Music;
+using MentalAlchemy.Compounds;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -189,6 +190,17 @@ namespace EarTrainer
 			}
 		}
 
+		ObservableCollection<HistoryTreeViewItem> _historyItems;
+		public ObservableCollection<HistoryTreeViewItem> HistoryTreeItems
+		{
+			get { return _historyItems; }
+			set 
+			{
+				_historyItems = value;
+				OnPropertyChanged("HistoryTreeItems");
+			}
+		}
+
 		public ICommand Generate { get; private set; }
 		public ICommand Play { get; private set; }
 		public ICommand PlayUser { get; private set; }
@@ -217,7 +229,7 @@ namespace EarTrainer
 			Compare = new RelayCommand(CompareNotes);
 			About = new RelayCommand(AboutClick);
 
-			
+			_historyItems = new ObservableCollection<HistoryTreeViewItem> ();
 		}
 
 		public void LoadHistory()
@@ -235,10 +247,11 @@ namespace EarTrainer
 			int length = _notesLength;
 			string mode = _taskModes[_curTaskModeIndex];
 
-			Global.SetNotes (GenerateNotes(mode, length));
+			var notes = GenerateNotes(mode, length);
+			registerTask(notes);
 
 			//_notesText = _notes[0].Letter.ToString ();
-			_notesText = MusicUtils.ToString (Global.Notes, _separator);
+			_notesText = MusicUtils.ToString(notes, _separator);
 			NotesText = _notesText;
 		}
 
@@ -279,20 +292,35 @@ namespace EarTrainer
 		{
 			if (UserNotesText == null || UserNotesText.Length == 0 || _notesText.Length == 0) return;
 
-			Global.SetUserNotesText(UserNotesText, addAnswer: true);
-			var userNotesStr = getUserNotes(UserNotesText);
+			registerUserInput();
+
+			//var userNotesStr = getUserNotes(UserNotesText);
+			var userNotes = Global.Logger.LastUserAnswer.Notes;
 			int errors = 0;
-			for (int i = 0; i < System.Math.Min (_notesLength, userNotesStr.Length); ++i )
+			for (int i = 0; i < System.Math.Min (_notesLength, userNotes.Length); ++i )
 			{
-				var notestr = Global.Notes[i].ToString();
-				var note = notestr.Substring(0, notestr.Length - 1).ToLower();
-				if (note != userNotesStr[i].ToLower())
+				if (Global.Notes[i] != userNotes[i])
 				{
 					errors++;
 				}
 			}
-			errors += System.Math.Abs(_notesLength - userNotesStr.Length);
+			errors += System.Math.Abs(_notesLength - userNotes.Length);
 			StatusText = "Errors count: " + errors;
+		}
+
+		protected void registerTask(Midi.Pitch[] notes)
+		{
+			Global.SetNotes(notes);
+			_historyItems.Add(new HistoryTreeViewItem (Global.Logger.CurrentTask));
+		}
+
+		protected void registerUserInput()
+		{
+			Global.SetUserNotesText(UserNotesText, addAnswer: true);
+			if (_historyItems.Count == 0) return;	// no task.
+
+			new HistoryTreeViewItem(Global.Logger.LastUserAnswer, _historyItems.Last ());
+			//_historyItems.Add(new HistoryTreeViewItem (Global.Logger.LastUserAnswer));
 		}
 
 		public void AboutClick()

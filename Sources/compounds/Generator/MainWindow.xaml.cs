@@ -34,9 +34,9 @@ using System.Windows.Shapes;
 //using Composer;
 using MentalAlchemy.Atoms;
 using MentalAlchemy.Molecules.Music;
+using MentalAlchemy.Compounds;
 
 using MusUtils = MentalAlchemy.Molecules.Music.MusicUtils;
-using Library.Compounds;
 
 namespace Generator
 {

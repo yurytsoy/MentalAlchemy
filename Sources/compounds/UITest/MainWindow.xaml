@@ -1,0 +1,9 @@
+﻿<Window x:Class="UITest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:mactrl="clr-namespace:MentalAlchemy.Compounds;assembly=Library"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+		<mactrl:StaveControl BorderBrush="Black" BorderThickness="2" Height="150" Width="500"></mactrl:StaveControl>
+    </Grid>
+</Window>

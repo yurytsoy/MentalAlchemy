@@ -70,6 +70,23 @@ namespace EarTrainer
 		List<Task> _tasks = new List<Task> ();
 		string _filename;
 
+		public UserAnswer LastUserAnswer
+		{
+			get 
+			{
+				var curSession = _tasks.Last();
+				return curSession.UserInputs.Last();
+			}
+		}
+
+		public Task CurrentTask
+		{
+			get 
+			{
+				return _tasks.Last();
+			}
+		}
+
 		public UserAnswersLogger(string filename) 
 		{
 			_filename = filename;

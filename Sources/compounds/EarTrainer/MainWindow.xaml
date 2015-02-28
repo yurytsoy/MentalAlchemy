@@ -70,8 +70,8 @@
 			<Label>User input</Label>
 			<TextBox Name="InputBox" Text="{Binding UserNotesText, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True" Grid.Column="1" Margin="3" BorderBrush="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"/>
 			
-			<Expander Grid.Row="1" Grid.Column="1" Header="Tasks History" Visibility="Collapsed">
-				<TreeView Name="HistoryTree"></TreeView>
+			<Expander Grid.Row="1" Grid.Column="1" Header="Tasks History" Visibility="Visible" Margin="3">
+				<TreeView Name="HistoryTree" ItemsSource="{Binding HistoryTreeItems}"></TreeView>
 			</Expander>
 		</Grid>
 

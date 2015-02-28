@@ -26,7 +26,7 @@ using Midi;
 using MidiControl = Midi.Control;
 using System.Threading;
 
-namespace Library.Compounds
+namespace MentalAlchemy.Compounds
 {
 	/// <summary>
 	/// TODO: Add Pause.
