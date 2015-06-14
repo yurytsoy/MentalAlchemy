@@ -13,20 +13,20 @@
 			<Label VerticalAlignment="Center">Length:</Label>
 			<TextBox x:Name="RandomLengthBox" Margin="3" Text="{Binding CompositionLength, UpdateSourceTrigger=PropertyChanged}" Width="42"></TextBox>
 			<Button Margin="6,3" Width="60" Click="GenerateBtn_Click">Generate</Button>
-			<Button Margin="6,3" Width="42" Click="PlayBtn_Click">Play</Button>
+			<Button Name="PlayBtn" Margin="6,3" Width="42" Click="PlayBtn_Click">Play</Button>
 		</StackPanel>
 
-		<TabControl Grid.Row="1">
+		<TabControl Grid.Row="1" Name="MainTabControl" SelectionChanged="MainTab_SelectionChanged">
 			<TabItem Header="Random">
 				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="36"></RowDefinition>
-						<RowDefinition></RowDefinition>
-					</Grid.RowDefinitions>
-					
+					<TextBox Name="RandomNotesBox" Margin="3" Height="240" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto"></TextBox>
 				</Grid>
 			</TabItem>
-			<TabItem Header="Transition table"></TabItem>
+			<TabItem Header="Transition table">
+				<Grid>
+					<TextBox Name="TransTableBox" Margin="3" Height="240" TextWrapping="Wrap" AcceptsReturn="True" VerticalAlignment="Stretch" VerticalScrollBarVisibility="Auto"></TextBox>
+				</Grid>
+			</TabItem>
 			<TabItem Header="Numbers"></TabItem>
 			<TabItem Header="Sequences"></TabItem>
 			<TabItem Header="Images"></TabItem>

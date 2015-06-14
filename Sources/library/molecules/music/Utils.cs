@@ -59,12 +59,66 @@ namespace MentalAlchemy.Molecules.Music
 			} 
 			#endregion
 
+			return ToPitches(noteArray, defaultOctave);
+
+			//#region - Standardize pitches for the [Midi.Pitch] data type. -
+			//// reference: Midi.Pitch.A0;
+			//// reference: Midi.Pitch.ASharp5;
+			//for (int i = 0; i < noteArray.Length; ++i )
+			//{
+			//	var cur = noteArray[i];
+			//	cur = cur.Trim();	// remove extra spaces.
+
+			//	// enforce capital first letter.
+			//	var first = cur[0] + "";
+			//	cur = cur.Remove(0, 1);
+			//	cur = cur.Insert(0, first.ToUpper());
+
+			//	// enforce "Sharp".
+			//	if (cur.ToLower().Contains ("sharp"))
+			//	{
+			//		cur = cur.Remove(1, 5);
+			//		cur = cur.Insert(1, "Sharp");
+			//	}
+
+			//	// TODO: process flats.
+
+			//	// check if a pitch has a number at the end.
+			//	var last = cur[cur.Length - 1];
+			//	if (!char.IsDigit (last))
+			//	{
+			//		cur += defaultOctave;
+			//	}
+			//	noteArray[i] = cur;
+			//}
+			//#endregion
+
+			//var res = new Midi.Pitch[noteArray.Length];
+			//for (int i = 0; i < noteArray.Length; ++i )
+			//{
+			//	res[i] = (Midi.Pitch)Enum.Parse(typeof(Midi.Pitch), noteArray[i]);
+			//}
+
+			//return res;
+		}
+
+		/// <summary>
+		/// Converts given string to a collection of pitches.
+		/// The string assumes that pitches are separated by either [separator] or space.
+		/// Alternatively the pitches can be written as one-character-notes from a set {C, D, ..., B}.
+		/// </summary>
+		/// <param name="notes"></param>
+		/// <param name="defaultOctave"></param>
+		/// <param name="separator"></param>
+		/// <returns></returns>
+		public static Midi.Pitch[] ToPitches(string[] notes, int defaultOctave = 4)
+		{
 			#region - Standardize pitches for the [Midi.Pitch] data type. -
 			// reference: Midi.Pitch.A0;
 			// reference: Midi.Pitch.ASharp5;
-			for (int i = 0; i < noteArray.Length; ++i )
+			for (int i = 0; i < notes.Length; ++i)
 			{
-				var cur = noteArray[i];
+				var cur = notes[i];
 				cur = cur.Trim();	// remove extra spaces.
 
 				// enforce capital first letter.
@@ -73,7 +127,7 @@ namespace MentalAlchemy.Molecules.Music
 				cur = cur.Insert(0, first.ToUpper());
 
 				// enforce "Sharp".
-				if (cur.ToLower().Contains ("sharp"))
+				if (cur.ToLower().Contains("sharp"))
 				{
 					cur = cur.Remove(1, 5);
 					cur = cur.Insert(1, "Sharp");
@@ -83,23 +137,23 @@ namespace MentalAlchemy.Molecules.Music
 
 				// check if a pitch has a number at the end.
 				var last = cur[cur.Length - 1];
-				if (!char.IsDigit (last))
+				if (!char.IsDigit(last))
 				{
 					cur += defaultOctave;
 				}
-				noteArray[i] = cur;
+				notes[i] = cur;
 			}
 			#endregion
 
-			var res = new Midi.Pitch[noteArray.Length];
-			for (int i = 0; i < noteArray.Length; ++i )
+			var res = new Midi.Pitch[notes.Length];
+			for (int i = 0; i < notes.Length; ++i)
 			{
-				res[i] = (Midi.Pitch)Enum.Parse(typeof(Midi.Pitch), noteArray[i]);
+				res[i] = (Midi.Pitch)Enum.Parse(typeof(Midi.Pitch), notes[i]);
 			}
 
 			return res;
 		}
-
+		
 		public static Midi.Note[] ToMidi(string[] notes)
 		{
 			var res = new Midi.Note[notes.Length];
