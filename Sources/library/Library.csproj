@@ -77,6 +77,8 @@
     <Compile Include="molecules\Distributions.cs" />
     <Compile Include="molecules\FileIO.cs" />
     <Compile Include="molecules\GraphElements.cs" />
+    <Compile Include="molecules\image processing\ImageProcessingElements.cs" />
+    <Compile Include="molecules\image processing\Morphology.cs" />
     <Compile Include="molecules\machine learning\AmalgamIDEA.cs" />
     <Compile Include="molecules\machine learning\EAElements.cs" />
     <Compile Include="molecules\machine learning\EvolutionaryAlgorithm.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="molecules\music\Utils.cs" />
     <Compile Include="molecules\Numerics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="tests\TestAlgorithms.cs" />
     <Compile Include="tests\TestGdp.cs" />
     <Compile Include="tests\TestMusic.cs" />
   </ItemGroup>

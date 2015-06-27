@@ -1564,6 +1564,22 @@ namespace MentalAlchemy.Atoms
 			}
 			return res;
 		}
+
+		/// <summary>
+		/// Creates an array of given size filled with specified value.
+		/// </summary>
+		/// <param name="size"></param>
+		/// <param name="val"></param>
+		/// <returns></returns>
+		public static float[] Create(int size, float val)
+		{ 
+			var res = new float[size];
+			for (int i = 0; i < size; ++i )
+			{
+				res[i] = val;
+			}
+			return res;
+		}
 		#endregion
 
 		#region - Arithmetics. -
