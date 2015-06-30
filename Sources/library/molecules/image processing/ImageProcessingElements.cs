@@ -217,22 +217,30 @@ namespace MentalAlchemy.Molecules
 		protected static float[, ,] computeLookupTable(float[] data, int width, int height, int rowIndex, uwMorphContext ctx)
 		{
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
-			int radx = (ctx.MaxX - ctx.MinX) / 2, rady = (ctx.MaxYOffset - ctx.MinYOffset) / 2;
+			int deltaY = ymax - ymin + 1;
+			int radx = (ctx.MaxX - ctx.MinX) / 2, rady = deltaY / 2;
 			int chordLengthsCount = ctx.ChordLengths.Length;
 
-			var table = new float[chordLengthsCount, width + radx * 2, ymax + 1];	// enlarge the 2nd dimension to avoid index out of bounds.
-			for (int r = ymin; r <= ymax; ++r )
+			var dim1 = width + radx * 2;
+			var table = new float[chordLengthsCount, dim1, deltaY];	// enlarge the 2nd dimension to avoid index out of bounds.
+			for (int y = ymin; y <= ymax; ++y )
 			{
+				int r = y - ymin;
+
 				// copy original values.
-				var rowOffset = (rowIndex + r) * width;
-				for (int x = 0; x < width; ++x) { table[0, x, r] = data[rowOffset + x]; }
+				//var rowOffset = (rowIndex + r) * width;
+				var rowOffset = (rowIndex + y) * width;
+				if (rowOffset >= 0)
+				{
+					for (int x = 0; x < width; ++x) { table[0, x + radx, r] = data[rowOffset + x]; }
+				}
 
 				for (int i = 1; i < chordLengthsCount; ++i )
 				{
 					for (var x = 0; x < width; ++x)
 					{
 						var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
-						table[i,x,r] = Math.Min (table[i-1,x,r], table[i-1, x + d, r]);
+						table[i, x + radx, r] = Math.Min(table[i - 1, x + radx, r], table[i - 1, x + radx + d, r]);
 					}
 				}
 			}
@@ -242,10 +250,12 @@ namespace MentalAlchemy.Molecules
 		protected static void updateLookupTable(float[] data, int width, int height, int rowIndex, float[,,] lut, uwMorphContext ctx)
 		{ 
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
-
-			for (int r = ymin; r < ymax; ++r )
+			int radx = (ctx.MaxX - ctx.MinX) / 2;
+			int dim1 = lut.GetLength(1);
+			for (int y = ymin; y < ymax; ++y )
 			{
-				for (int x=0; x<width; ++x) 
+				int r = y - ymin;
+				for (int x=0; x<dim1; ++x) 
 				{
 					for (int i=0; i<ctx.ChordLengths.Length; ++i)
 					{
@@ -257,6 +267,7 @@ namespace MentalAlchemy.Molecules
 			// update the last row.
 			//var rvalue = ymax-1;
 			var rowOffset = (rowIndex + ymax) * width;
+			var deltaY = ymax - ymin;
 			for (int x = 0; x < width && rowOffset < data.Length; ++x)
 			{
 				int offset = rowOffset + x;
@@ -267,7 +278,7 @@ namespace MentalAlchemy.Molecules
 					{
 						if (tmpMin > data[offset + a]) { tmpMin = data[offset + a]; }
 					}
-					lut[i, x, ymax] = tmpMin;
+					lut[i, x + radx, deltaY] = tmpMin;
 				}
 			}
 		}
@@ -289,18 +300,23 @@ namespace MentalAlchemy.Molecules
 			int rady = ctx.MaxYOffset / 2;
 
 			var rowOffset = (rowIndex) * width;
-			for (int x = 0; x < width - radx; ++x)
+			for (int x = 0; x < width; ++x)
 			{
-				var coord = rowOffset + x + radx;	// -radx;
+				//var coord = rowOffset + x + radx;	// -radx;
+				var coord = rowOffset + x;	// -radx;
 				if (coord < 0) continue;
 
 				foreach (var c in ctx.Chords)
 				{
 					//if (c.X + x < 0) continue;
 
+					int row = c.Y - ctx.MinYOffset;
+					int col = x + c.X - ctx.MinX;
+					if (row < 0 || col < 0) continue;
+
 					var len = c.Length;
 					var ic = Array.IndexOf(ctx.ChordLengths, len);
-					var v = lut[ic, x + c.X, c.Y];
+					var v = lut[ic, col, row];
 					if (v < ctx.Result[coord]) { ctx.Result[coord] = v; }
 				}
 			}
@@ -316,18 +332,23 @@ namespace MentalAlchemy.Molecules
 		/// <param name="witdh"></param>
 		/// <param name="height"></param>
 		/// <returns></returns>
-		public static Chord[] ToChords (float[] data, int width, int height)
+		public static Chord[] ToChords (float[] data, int width, int height, int centerX = 0, int centerY = 0)
 		{
+			if (centerX == 0) centerX = width / 2;
+			if (centerY == 0) centerY = height / 2;
+
 			var res = new List<Chord>();
 			for (int i = 0; i < height; ++i )
 			{
 				var rowOffset = i * width;
+				var chordY = i - centerY;
 				var rowChords = ToChords(VectorMath.Subvector (data, rowOffset, rowOffset + width - 1));
 				if (rowChords.Length > 0)
 				{
  					foreach (var chord in rowChords)
 					{
-						chord.Y = i;
+						chord.Y = chordY;
+						chord.X -= centerX;
 					}
 					res.AddRange(rowChords);
 				}
