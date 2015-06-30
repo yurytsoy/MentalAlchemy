@@ -214,7 +214,7 @@ namespace MentalAlchemy.Molecules
 		/// <param name="data"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		protected static float[, ,] computeLookupTable(float[] data, int width, int height, int rowIndex, uwMorphContext ctx)
+		protected static float[][][] computeLookupTable(float[] data, int width, int height, int rowIndex, uwMorphContext ctx)
 		{
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
 			int deltaY = ymax - ymin + 1;
@@ -222,7 +222,16 @@ namespace MentalAlchemy.Molecules
 			int chordLengthsCount = ctx.ChordLengths.Length;
 
 			var dim1 = width + radx * 2;
-			var table = new float[chordLengthsCount, dim1, deltaY];	// enlarge the 2nd dimension to avoid index out of bounds.
+			var table = new float[deltaY][][];	//, dim1, deltaY];	// enlarge the 2nd dimension to avoid index out of bounds.
+			for (int i=0; i<deltaY; ++i) 
+			{
+				table[i] = new float[dim1][];
+				for (int j=0; j<dim1; ++j)
+				{
+					table[i][j] = new float[chordLengthsCount];
+				}
+			}
+
 			for (int y = ymin; y <= ymax; ++y )
 			{
 				int r = y - ymin;
@@ -232,7 +241,7 @@ namespace MentalAlchemy.Molecules
 				var rowOffset = (rowIndex + y) * width;
 				if (rowOffset >= 0)
 				{
-					for (int x = 0; x < width; ++x) { table[0, x + radx, r] = data[rowOffset + x]; }
+					for (int x = 0; x < width; ++x) { table[r][ x + radx][0] = data[rowOffset + x]; }
 				}
 
 				for (int i = 1; i < chordLengthsCount; ++i )
@@ -240,34 +249,29 @@ namespace MentalAlchemy.Molecules
 					for (var x = 0; x < width; ++x)
 					{
 						var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
-						table[i, x + radx, r] = Math.Min(table[i - 1, x + radx, r], table[i - 1, x + radx + d, r]);
+						table[r][x + radx][i] = Math.Min(table[r][x + radx][i - 1], table[r][ x + radx + d ][i - 1]);
 					}
 				}
 			}
 			return table;
 		}
 
-		protected static void updateLookupTable(float[] data, int width, int height, int rowIndex, float[,,] lut, uwMorphContext ctx)
+		protected static void updateLookupTable(float[] data, int width, int height, int rowIndex, float[][][] lut, uwMorphContext ctx)
 		{ 
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
+			var deltaY = ymax - ymin;
 			int radx = (ctx.MaxX - ctx.MinX) / 2;
-			int dim1 = lut.GetLength(1);
-			for (int y = ymin; y < ymax; ++y )
+			int dim1 = lut[0].Length;
+			lut[deltaY] = lut[0];	// make a carousel.
+			for (int y = ymin; y < ymax; ++y)
 			{
 				int r = y - ymin;
-				for (int x=0; x<dim1; ++x) 
-				{
-					for (int i=0; i<ctx.ChordLengths.Length; ++i)
-					{
-						lut[i, x, r] = lut[i, x, r + 1];	// shift everything by one row.
-					}
-				}
+				lut[r] = lut[r + 1];
 			}
 
 			// update the last row.
 			//var rvalue = ymax-1;
 			var rowOffset = (rowIndex + ymax) * width;
-			var deltaY = ymax - ymin;
 			for (int x = 0; x < width && rowOffset < data.Length; ++x)
 			{
 				int offset = rowOffset + x;
@@ -278,7 +282,7 @@ namespace MentalAlchemy.Molecules
 					{
 						if (tmpMin > data[offset + a]) { tmpMin = data[offset + a]; }
 					}
-					lut[i, x + radx, deltaY] = tmpMin;
+					lut[deltaY] [x + radx][i] = tmpMin;
 				}
 			}
 		}
@@ -292,7 +296,7 @@ namespace MentalAlchemy.Molecules
 		/// <param name="rowIndex"></param>
 		/// <param name="lut"></param>
 		/// <param name="ctx"></param>
-		protected static void lineErode(int width, int height, int rowIndex, float[,,] lut, uwMorphContext ctx)
+		protected static void lineErode(int width, int height, int rowIndex, float[][][] lut, uwMorphContext ctx)
 		{
 			// skip init of the resulting row, since the result was preallocated during context creation.
 
@@ -316,7 +320,7 @@ namespace MentalAlchemy.Molecules
 
 					var len = c.Length;
 					var ic = Array.IndexOf(ctx.ChordLengths, len);
-					var v = lut[ic, col, row];
+					var v = lut[row][col][ic];
 					if (v < ctx.Result[coord]) { ctx.Result[coord] = v; }
 				}
 			}
