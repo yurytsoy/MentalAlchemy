@@ -33,7 +33,7 @@ namespace MentalAlchemy.Tests
 				int seW = size, seH = size;
 				var se = VectorMath.Ones(seW * seH);
 
-				int runCount = 10;
+				int runCount = 5;
 				float[] res = null;
 				float[] times = new float [runCount];
 				for (int i = 0; i < runCount; ++i)

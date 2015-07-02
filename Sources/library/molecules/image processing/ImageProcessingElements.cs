@@ -119,6 +119,14 @@ namespace MentalAlchemy.Molecules
 		}
 		#endregion
 
+		#region - Plain morphology. -
+		public static float[] ErodePlain(float[] data, int width, int height, float[] seData, int seWidth, int seHeight)
+		{ 
+
+			throw new NotImplementedException ();
+		}
+		#endregion
+
 		#region - Implementation of the morphological dilation by Urbach and Wilkinson. -
 		protected struct uwMorphContext
 		{
@@ -221,14 +229,16 @@ namespace MentalAlchemy.Molecules
 			int radx = (ctx.MaxX - ctx.MinX) / 2, rady = deltaY / 2;
 			int chordLengthsCount = ctx.ChordLengths.Length;
 
-			var dim1 = width + radx * 2;
+			//var dim1 = width + radx * 2;
+			var dim1 = width;
 			var table = new float[deltaY][][];	//, dim1, deltaY];	// enlarge the 2nd dimension to avoid index out of bounds.
 			for (int i=0; i<deltaY; ++i) 
 			{
 				table[i] = new float[dim1][];
 				for (int j=0; j<dim1; ++j)
 				{
-					table[i][j] = new float[chordLengthsCount];
+					//table[i][j] = new float[chordLengthsCount];
+					table[i][j] = VectorMath.Create(chordLengthsCount, float.MaxValue);
 				}
 			}
 
@@ -240,16 +250,19 @@ namespace MentalAlchemy.Molecules
 				//var rowOffset = (rowIndex + r) * width;
 				var rowOffset = (rowIndex + y) * width;
 				if (rowOffset >= 0)
+				//if (y >= 0)
 				{
-					for (int x = 0; x < width; ++x) { table[r][ x + radx][0] = data[rowOffset + x]; }
+					//for (int x = 0; x < width; ++x) { table[r][x + radx][0] = data[rowOffset + x]; }
+					for (int x = 0; x < width; ++x) { table[r][x][0] = data[rowOffset + x]; }
 				}
 
 				for (int i = 1; i < chordLengthsCount; ++i )
 				{
-					for (var x = 0; x < width; ++x)
+					for (var x = 0; x < dim1 - ctx.ChordLengths[i-1]; ++x)
 					{
 						var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
-						table[r][x + radx][i] = Math.Min(table[r][x + radx][i - 1], table[r][ x + radx + d ][i - 1]);
+						//table[r][x][i] = Math.Min(table[r][x][i - 1], table[r][ x + d ][i - 1]);
+						table[r][x][i] = Math.Min(table[r][x][i - 1], table[r][x + d][i - 1]);
 					}
 				}
 			}
@@ -260,8 +273,8 @@ namespace MentalAlchemy.Molecules
 		{ 
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
 			var deltaY = ymax - ymin;
-			int radx = (ctx.MaxX - ctx.MinX) / 2;
-			int dim1 = lut[0].Length;
+			//int radx = (ctx.MaxX - ctx.MinX) / 2;
+			//int dim1 = lut[0].Length;
 			lut[deltaY] = lut[0];	// make a carousel.
 			for (int y = ymin; y < ymax; ++y)
 			{
@@ -271,18 +284,29 @@ namespace MentalAlchemy.Molecules
 
 			// update the last row.
 			//var rvalue = ymax-1;
-			var rowOffset = (rowIndex + ymax) * width;
-			for (int x = 0; x < width && rowOffset < data.Length; ++x)
+			//var rowOffset = (rowIndex + ymax) * width;
+			//var rowOffset = (rowIndex) * width;
+			for (int x = 0; x < width; ++x)
 			{
-				int offset = rowOffset + x;
+				var lutYX = lut[deltaY][x];
 				for (int i = 0; i < ctx.ChordLengths.Length; ++i)
 				{
 					var tmpMin = float.MaxValue;
-					for (int a = 0; a < ctx.ChordLengths[i] && (offset + a) < data.Length; ++a)
+					//var chordXOffset = ctx.Chords[i].X;
+					var chordXOffset = 0;
+					//var rowOffset = (rowIndex + ctx.Chords[i].Y) * width;
+					var rowOffset = (rowIndex) * width;
+					if (rowOffset < 0 || rowOffset >= data.Length) continue;
+					
+					//int offset = rowOffset;
+					int ixLimit = rowOffset + width;
+					for (int a = 0, ix = rowOffset + x + chordXOffset; a < ctx.ChordLengths[i] && ix < ixLimit; ++a, ++ix)
 					{
-						if (tmpMin > data[offset + a]) { tmpMin = data[offset + a]; }
+						if (ix < 0) continue;
+						if (tmpMin > data[ix]) { tmpMin = data[ix]; }
 					}
-					lut[deltaY] [x + radx][i] = tmpMin;
+					//lut[deltaY][x][i] = tmpMin;
+					lutYX[i] = tmpMin;
 				}
 			}
 		}
@@ -301,28 +325,39 @@ namespace MentalAlchemy.Molecules
 			// skip init of the resulting row, since the result was preallocated during context creation.
 
 			int radx = ctx.MaxChordLength / 2;
-			int rady = ctx.MaxYOffset / 2;
+			int rady = (ctx.MaxYOffset - ctx.MinYOffset) / 2;
 
 			var rowOffset = (rowIndex) * width;
+			var lenIdx = new Dictionary<int, int>();
+			foreach (var c in ctx.Chords)
+			{
+				if (lenIdx.ContainsKey(c.Length)) continue;
+				var idx = Array.IndexOf(ctx.ChordLengths, c.Length);
+				lenIdx.Add(c.Length, idx);
+			}
+
 			for (int x = 0; x < width; ++x)
 			{
 				//var coord = rowOffset + x + radx;	// -radx;
 				var coord = rowOffset + x;	// -radx;
 				if (coord < 0) continue;
 
+				var resVal = ctx.Result[coord];
 				foreach (var c in ctx.Chords)
 				{
 					//if (c.X + x < 0) continue;
 
 					int row = c.Y - ctx.MinYOffset;
-					int col = x + c.X - ctx.MinX;
+					int col = x + c.X -ctx.MinX;
 					if (row < 0 || col < 0) continue;
 
 					var len = c.Length;
-					var ic = Array.IndexOf(ctx.ChordLengths, len);
+					//var ic = Array.IndexOf(ctx.ChordLengths, len);
+					var ic = lenIdx[c.Length];
 					var v = lut[row][col][ic];
-					if (v < ctx.Result[coord]) { ctx.Result[coord] = v; }
+					if (v < resVal) { resVal = v; }
 				}
+				ctx.Result[coord] = resVal;
 			}
 		}
 		#endregion
