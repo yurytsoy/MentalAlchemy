@@ -27,9 +27,11 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
-			MentalAlchemy.Tests.TestAlgorithms.TestErode();
+			//MentalAlchemy.Tests.TestAlgorithms.TestErode();
 
 			//MentalAlchemy.Tests.TestMusic.TestTransitionTable();
+
+			Euler.Problem4();
 		}
 	}
 }
