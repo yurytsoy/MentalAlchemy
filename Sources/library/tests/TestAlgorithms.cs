@@ -14,12 +14,14 @@ namespace MentalAlchemy.Tests
 	{
 		public static void TestErode()
 		{
-			int width = 512, height = 512;
+			//int width = 512, height = 512;
 			
 			//var bmp = ImageProcessingElements.CreateRandomImageCircles(new System.Drawing.Size(width, height), 20);
 			var bmp = (Bitmap)Bitmap.FromFile("lena_bw.png");
+			//var bmp = (Bitmap)Bitmap.FromFile("lena.png");
+			//var bmp = (Bitmap)Bitmap.FromFile("test_bw.png");
 			//var bmp = (Bitmap)Bitmap.FromFile("test.tif");
-			bmp.Save("image0.png");
+			int width = bmp.Width, height = bmp.Height;
 
 			var data = ImageProcessingElements.ToFloats(bmp, 0);
 
@@ -33,7 +35,7 @@ namespace MentalAlchemy.Tests
 				int seW = size, seH = size;
 				var se = VectorMath.Ones(seW * seH);
 
-				int runCount = 5;
+				int runCount = 10;
 				float[] res = null;
 				float[] times = new float [runCount];
 				for (int i = 0; i < runCount; ++i)
