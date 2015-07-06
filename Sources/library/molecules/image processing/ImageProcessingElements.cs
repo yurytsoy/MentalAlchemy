@@ -143,6 +143,8 @@ namespace MentalAlchemy.Molecules
 			/// </summary>
 			public int[] ChordLengths;
 			public float[] Result;
+
+			public int[] LengthsIndices;
 		}
 
 		/// <summary>
@@ -212,6 +214,16 @@ namespace MentalAlchemy.Molecules
 			ctx.MaxChordLength = maxl;
 			ctx.ChordLengths = lengths.ToArray();
 			ctx.Result = VectorMath.Create(width * height, 65535f);
+
+			var lenIdx = new int[ctx.MaxChordLength + 1];	// array to store indices of chords of specific lengths.
+			//var lenIdx = new Dictionary<int, int>();
+			foreach (var c in ctx.Chords)
+			{
+				var idx = Array.IndexOf(ctx.ChordLengths, c.Length);
+				lenIdx[c.Length] = idx;
+			}
+			ctx.LengthsIndices = lenIdx;
+
 			return ctx;
 		}
 
@@ -288,17 +300,23 @@ namespace MentalAlchemy.Molecules
 			//var rowOffset = (rowIndex + ymax) * width;
 			//var rowOffset = (rowIndex) * width;
 			var rowOffset = (rowIndex + ctx.MaxYOffset) * width;
+			if (rowOffset < 0 || rowOffset >= data.Length) return;
+
+			var pixelOffset = rowOffset - radx;
+			int chordLengthsCount = ctx.ChordLengths.Length;
+			int ixLimit = rowOffset + width;
 			for (int x = 0; x < width + 2 * radx; ++x)
 			{
 				var lutYX = lut[deltaY][x];
-				for (int i = 0; i < ctx.ChordLengths.Length; ++i)
+				int curX = pixelOffset + x;
+				for (int i = 0; i < chordLengthsCount; ++i)
 				{
 					var tmpMin = float.MaxValue;
-					if (rowOffset < 0 || rowOffset >= data.Length) continue;
 
-					//int offset = rowOffset;
-					int ixLimit = rowOffset + width;
-					for (int a = 0, ix = rowOffset + x + a - radx; a < ctx.ChordLengths[i] && ix < ixLimit; ++a, ++ix)
+					int ix = curX;
+					int aLimit = Math.Min(ctx.ChordLengths[i], ixLimit - ix);
+					//for (int a = 0; a < curLength && ix < ixLimit; ++a, ++ix)
+					for (int a = 0; a < aLimit; ++a, ++ix)
 					{
 						if (ix < rowOffset) continue;
 						if (tmpMin > data[ix]) { tmpMin = data[ix]; }
@@ -328,14 +346,9 @@ namespace MentalAlchemy.Molecules
 			//int rady = (ctx.MaxYOffset - ctx.MinYOffset) / 2;
 
 			var rowOffset = (rowIndex) * width;
-			var lenIdx = new Dictionary<int, int>();
-			foreach (var c in ctx.Chords)
-			{
-				if (lenIdx.ContainsKey(c.Length)) continue;
-				var idx = Array.IndexOf(ctx.ChordLengths, c.Length);
-				lenIdx.Add(c.Length, idx);
-			}
 
+			var lenIdx = ctx.LengthsIndices;
+			var chordCount = ctx.Chords.Length;
 			for (int x = 0; x < width; ++x)
 			{
 				//var coord = rowOffset + x + radx;	// -radx;
@@ -343,10 +356,10 @@ namespace MentalAlchemy.Molecules
 				if (coord < 0) continue;
 
 				var resVal = ctx.Result[coord];
-				foreach (var c in ctx.Chords)
+				for (int k=0; k<chordCount; ++k)
 				{
 					//if (c.X + x < 0) continue;
-
+					var c = ctx.Chords[k];
 					int row = c.Y - ctx.MinYOffset;
 					int col = x + c.X + radx;
 					//int col = x + c.X;
@@ -426,11 +439,12 @@ namespace MentalAlchemy.Molecules
 				{	// new chord.
 					tmpChord = new Chord() { X = i, Y = 0, Length = 1 };
 				}
-				else
+				else if (data[i] <= 0 && data[i - 1] > 0)
 				{	// break the current chord.
 					res.Add(tmpChord);
 					tmpChord = null;
-				}
+				} 
+				// ignore the case when both data[i] and data[i-1] < 0
 			}
 
 			if (tmpChord != null) 
