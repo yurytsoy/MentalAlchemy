@@ -302,29 +302,18 @@ namespace MentalAlchemy.Molecules
 			var rowOffset = (rowIndex + ctx.MaxYOffset) * width;
 			if (rowOffset < 0 || rowOffset >= data.Length) return;
 
-			var pixelOffset = rowOffset - radx;
+			// use the same trick as with the initialization of the lut.
 			int chordLengthsCount = ctx.ChordLengths.Length;
-			int ixLimit = rowOffset + width;
-			for (int x = 0; x < width + 2 * radx; ++x)
-			{
-				var lutYX = lut[deltaY][x];
-				int curX = pixelOffset + x;
-				for (int i = 0; i < chordLengthsCount; ++i)
-				{
-					var tmpMin = float.MaxValue;
+			for (int x = 0; x < width; ++x) { lut[deltaY][x + radx][0] = data[rowOffset + x]; }
 
-					int ix = curX;
-					int aLimit = Math.Min(ctx.ChordLengths[i], ixLimit - ix);
-					//for (int a = 0; a < curLength && ix < ixLimit; ++a, ++ix)
-					for (int a = 0; a < aLimit; ++a, ++ix)
-					{
-						if (ix < rowOffset) continue;
-						if (tmpMin > data[ix]) { tmpMin = data[ix]; }
-						//if (ix < 0) continue;
-						//if (tmpMin > data[x + a]) { tmpMin = data[ix]; }
-					}
-					//lut[deltaY][x][i] = tmpMin;
-					lutYX[i] = tmpMin;
+			var dim1 = lut[0].Length;
+			for (int i = 1; i < chordLengthsCount; ++i)
+			{
+				for (var x = 0; x < dim1 - ctx.ChordLengths[i - 1]; ++x)
+				{
+					var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
+					//table[r][x][i] = Math.Min(table[r][x][i - 1], table[r][ x + d ][i - 1]);
+					lut[deltaY][x][i] = Math.Min(lut[deltaY][x][i - 1], lut[deltaY][x + d][i - 1]);
 				}
 			}
 		}
