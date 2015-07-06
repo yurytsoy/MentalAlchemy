@@ -265,16 +265,17 @@ namespace MentalAlchemy.Molecules
 				if (rowOffset >= 0)
 				//if (y >= 0)
 				{
-					for (int x = 0; x < width; ++x) { table[r][x + radx][0] = data[rowOffset + x]; }
+					var tabler = table[r];
+					for (int x = 0; x < width; ++x) { tabler[x + radx][0] = data[rowOffset + x]; }
 					//for (int x = 0; x < dim1; ++x) { table[r][x][0] = x - radx >= 0? data[rowOffset + x - radx] : 0; }
 
 					for (int i = 1; i < chordLengthsCount; ++i)
 					{
+						var previ = i - 1;
+						var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
 						for (var x = 0; x < dim1 - ctx.ChordLengths[i - 1]; ++x)
 						{
-							var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
-							//table[r][x][i] = Math.Min(table[r][x][i - 1], table[r][ x + d ][i - 1]);
-							table[r][x][i] = Math.Min(table[r][x][i - 1], table[r][x + d][i - 1]);
+							tabler[x][i] = Math.Min(tabler[x][previ], tabler[x + d][previ]);
 						}
 					}
 				}
@@ -300,20 +301,22 @@ namespace MentalAlchemy.Molecules
 			//var rowOffset = (rowIndex + ymax) * width;
 			//var rowOffset = (rowIndex) * width;
 			var rowOffset = (rowIndex + ctx.MaxYOffset) * width;
-			if (rowOffset < 0 || rowOffset >= data.Length) return;
+			//if (rowOffset < 0 || rowOffset >= data.Length) return;
+			if (rowOffset >= data.Length) return;
 
 			// use the same trick as with the initialization of the lut.
 			int chordLengthsCount = ctx.ChordLengths.Length;
-			for (int x = 0; x < width; ++x) { lut[deltaY][x + radx][0] = data[rowOffset + x]; }
+			var lutY = lut[deltaY];
+			for (int x = 0; x < width; ++x) { lutY[x + radx][0] = data[rowOffset + x]; }
 
 			var dim1 = lut[0].Length;
 			for (int i = 1; i < chordLengthsCount; ++i)
 			{
+				var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
+				var previ = i - 1;
 				for (var x = 0; x < dim1 - ctx.ChordLengths[i - 1]; ++x)
 				{
-					var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
-					//table[r][x][i] = Math.Min(table[r][x][i - 1], table[r][ x + d ][i - 1]);
-					lut[deltaY][x][i] = Math.Min(lut[deltaY][x][i - 1], lut[deltaY][x + d][i - 1]);
+					lutY[x][i] = Math.Min(lutY[x][previ], lutY[x + d][previ]);
 				}
 			}
 		}
