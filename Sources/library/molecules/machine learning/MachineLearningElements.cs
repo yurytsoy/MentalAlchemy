@@ -1665,6 +1665,7 @@ namespace MentalAlchemy.Molecules
 		public const string IDENTITY_FUNCTION = "Identity";
 		public const string LINEAR_FUNCTION = "Linear";
 		public const string SIGMOID_FUNCTION = "Sigmoid";
+		public const string SIGMOID_PROBBINARY_FUNCTION = "Binary (sigmoid prob)";
 
 		/// <summary>
 		/// [molecule]
@@ -1679,6 +1680,7 @@ namespace MentalAlchemy.Molecules
 			res.Add(SIGMOID_FUNCTION);
 			res.Add(LINEAR_FUNCTION);
 			res.Add(IDENTITY_FUNCTION);
+			res.Add(SIGMOID_PROBBINARY_FUNCTION);
 			return res.ToArray();
 		}
 
@@ -1696,6 +1698,7 @@ namespace MentalAlchemy.Molecules
 			if (string.Compare(name, LINEAR_FUNCTION, true) == 0) { return Linear; }
 			if (string.Compare(name, IDENTITY_FUNCTION, true) == 0) { return Identity; }
 			if (string.Compare(name, GAUSSIAN_FUNCTION, true) == 0) { return Gaussian; }
+			if (string.Compare(name, SIGMOID_PROBBINARY_FUNCTION, true) == 0) { return SigmoidProbBinary; }
 			throw new Exception(string.Format("[ActivationFunctions.GetActivationFunction] error: Incorrect activation function ({0})", name));
 		}
 
@@ -1800,6 +1803,25 @@ namespace MentalAlchemy.Molecules
 				res += x[i] * w[i];
 			}
 			return (float)(1.0 / (1.0 + Math.Exp(-a * res)));
+		}
+
+		/// <summary>
+		/// Calculates binary output using logistic function as a probability to have "1".
+		/// </summary>
+		/// <param name="w">Vector of weights.</param>
+		/// <param name="x">Vector of input signals.</param>
+		/// <param name="bias">Bias parameter value.</param>
+		/// <param name="a">Free parameter.</param>
+		/// <returns>Function output.</returns>
+		public static float SigmoidProbBinary(IList<float> w, IList<float> x, float bias, float a)
+		{
+			var res = bias;
+			for (var i = 0; i < w.Count; ++i)
+			{
+				res += x[i] * w[i];
+			}
+			var log = (float)(1.0 / (1.0 + Math.Exp(-a * res)));
+			return ContextRandom.NextDouble () < log ? 1 : 0;
 		}
 
 		/// <summary>

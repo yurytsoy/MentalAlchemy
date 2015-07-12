@@ -1133,6 +1133,18 @@ namespace MentalAlchemy.Atoms
 
 		/// <summary>
 		/// [atomic]
+		/// Multiplies matrix elements by a given number and updates input matrix.
+		/// </summary>
+		public static void MulInplace(float[][] m, float num)
+		{
+			for (int i = 0; i < m.Length; ++i )
+			{
+				VectorMath.MulInplace(m[i], num);
+			}
+		}
+
+		/// <summary>
+		/// [atomic]
 		/// 
 		/// Performs multiplication of two given matrices.
 		/// C = AB.
@@ -1325,7 +1337,7 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
-		/// Performs substitution of the given matrices.
+		/// Performs subtraction of the given matrices.
 		/// </summary>
 		/// <param name="m1">1st matrix.</param>
 		/// <param name="m2">Matrix to sub.</param>
@@ -1349,14 +1361,14 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
-		/// Performs substitution of the given matrices.
+		/// Performs subtraction of the given matrices.
 		/// </summary>
 		/// <param name="m1">1st matrix.</param>
 		/// <param name="m2">Matrix to sub.</param>
 		/// <returns>Addition result.</returns>
 		public static float[][] Sub(float[][] m1, float[][] m2)
 		{
-			int height = m1.Length, width = m2.Length;
+			int height = m1.Length, width = m1[0].Length;
 			var res = new float[height][];
 
 			for (int i = 0; i < height; i++)
@@ -1374,7 +1386,28 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
-		/// Performs substitution of the given matrices.
+		/// Performs inplace subtraction of the value from a given matrix.
+		/// </summary>
+		/// <param name="m1">1st matrix.</param>
+		/// <param name="m2">Matrix to sub.</param>
+		/// <returns>Addition result.</returns>
+		public static void SubInplace(float[][] m, float v)
+		{
+			int height = m.Length, width = m[0].Length;
+
+			for (int i = 0; i < height; i++)
+			{
+				for (int j = 0; j < width; j++)
+				{
+					m[i][j] -= v;
+				}
+			}
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Performs subtraction of the given matrices.
 		/// </summary>
 		/// <param name="m1">1st matrix.</param>
 		/// <param name="m2">Matrix to sub.</param>
@@ -1517,7 +1550,7 @@ namespace MentalAlchemy.Atoms
 		/// </summary>
 		/// <param name="m"></param>
 		/// <param name="arg"></param>
-		public static void Accumulate (ref List<float[]> m, List<float[]> arg)
+		public static void AccumulateInplace (IList<float[]> m, IList<float[]> arg)
 		{
 			if (m != null && m.Count != 0)
 			{

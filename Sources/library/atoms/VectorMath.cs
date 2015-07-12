@@ -1744,6 +1744,18 @@ namespace MentalAlchemy.Atoms
 
 		/// <summary>
 		/// [atomic]
+		/// Multiplies vector elements by a given number and updates input vector.
+		/// </summary>
+		public static void MulInplace(float[] v, float num)
+		{
+			for (int i = 0; i < v.Length; ++i)
+			{
+				v[i] *= num;
+			}
+		}
+
+		/// <summary>
+		/// [atomic]
 		/// 
 		/// Multiplies given complex array with the given number.
 		/// </summary>
