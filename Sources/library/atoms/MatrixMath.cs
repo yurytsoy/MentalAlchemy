@@ -2064,6 +2064,32 @@ namespace MentalAlchemy.Atoms
 			return res;
 		}
 
+		public static float[] CreateBorders(float[] data, int width, int height, int hBorder, int wBorder)
+		{ 
+			int resW = width + wBorder * 2, resH = height + hBorder * 2;
+			var res = new float[resW * resH];
+			for (int i = 0; i < height; ++i )
+			{
+				var offsetSrc = i* width;
+				var offsetDest = (i + hBorder) * resW + wBorder;
+				Array.Copy (data, offsetSrc, res, offsetDest, width);
+			}
+			return res;
+		}
+
+		public static float[] CreateBorders(float[] data, int width, int height, int hBorder, int wBorder, float borderFill)
+		{
+			int resW = width + wBorder * 2, resH = height + hBorder * 2;
+			var res = VectorMath.Create (resW * resH, borderFill);
+			for (int i = 0; i < height; ++i)
+			{
+				var offsetSrc = i * width;
+				var offsetDest = (i + hBorder) * resW + wBorder;
+				Array.Copy(data, offsetSrc, res, offsetDest, width);
+			}
+			return res;
+		}
+
 		/// <summary>
 		/// [atomic]
 		/// 
@@ -2089,7 +2115,20 @@ namespace MentalAlchemy.Atoms
 			}
 
 			return res;
-		} 
+		}
+
+		public static float[] RemoveBorders(float[] data, int width, int height, int hBorder, int wBorder)
+		{
+			int resW = width - wBorder * 2, resH = height - hBorder * 2;
+			var res = new float[resW * resH];
+			for (int i = 0; i < resH; ++i)
+			{
+				var offsetSrc = (i + hBorder) * width + wBorder;
+				var offsetDest = i * resW;
+				Array.Copy(data, offsetSrc, res, offsetDest, resW);
+			}
+			return res;
+		}
 		#endregion
 
 		#region - Removal of columns. -

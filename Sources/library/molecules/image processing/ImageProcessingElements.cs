@@ -122,8 +122,42 @@ namespace MentalAlchemy.Molecules
 		#region - Plain morphology. -
 		public static float[] ErodePlain(float[] data, int width, int height, float[] seData, int seWidth, int seHeight)
 		{ 
+			// pad the image.
+			int rady = seHeight / 2, radx = seWidth / 2;
+			var dataPad = MatrixMath.CreateBorders(data, width, height, rady, radx, 65535);
+			int padWidth = width + radx * 2, padHeight = height + rady * 2;
 
-			throw new NotImplementedException ();
+			var res = new float [data.Length];
+			for (int i = rady; i < rady + height; ++i)
+			{
+				//if (i < rady) continue;
+				//if (i >= rady + height) break;
+
+				var rowOffset = (i - rady) * width;
+				var rowOffsetPad = i * padWidth;
+				for (int j = radx; j < radx + width; ++j)
+				{
+					//if (j < radx) continue;
+					//if (j >= radx + width) break;
+
+					var min = dataPad[rowOffsetPad + j];
+					for (int i1 = i - rady, sei = 0; i1 <= i + rady; ++i1, ++sei )
+					{
+						var offset = i1 * padWidth;
+						var seOffset = sei * seWidth;
+						for (int j1 = j - radx, sej = seOffset; j1 <= j + radx; ++j1, ++sej )
+						{
+							if (seData[sej] > 0)
+							{
+								var el = dataPad[offset + j1];
+								if (el < min) { min = el; }
+							}
+						}
+					}
+					res[rowOffset + j - radx] = min;
+				}
+			}
+			return res;
 		}
 		#endregion
 
