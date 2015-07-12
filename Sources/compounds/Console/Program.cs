@@ -27,8 +27,9 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
-			MentalAlchemy.Tests.TestAlgorithms.TestErodePlain();
-
+			MentalAlchemy.Tests.TestAlgorithms.TestDilate();
+			//MentalAlchemy.Tests.TestAlgorithms.TestErode();
+			//MentalAlchemy.Tests.TestAlgorithms.TestErodePlain();
 			//MentalAlchemy.Tests.TestMusic.TestTransitionTable();
 		}
 	}

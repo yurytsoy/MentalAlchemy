@@ -161,7 +161,7 @@ namespace MentalAlchemy.Molecules
 		}
 		#endregion
 
-		#region - Implementation of the morphological dilation by Urbach and Wilkinson. -
+		#region - Implementation of the morphological erosion by Urbach and Wilkinson. -
 		protected struct uwMorphContext
 		{
 			public Chord[] Chords;
@@ -197,19 +197,47 @@ namespace MentalAlchemy.Molecules
 			var chords = ToChords(seData, seWidth, seHeight);
 			var context = makeContext(chords, width, height);
 
-			var lut = computeLookupTable(data, width, height, 0, context);
+			var lut = computeLookupTableErosion(data, width, height, 0, context);
 
 			lineErode(width, height, 0, lut, context);
 			for (int y = 1; y < height; ++y )
 			{
-				updateLookupTable(data, width, height, y, lut, context);
+				updateLookupTableErosion(data, width, height, y, lut, context);
 				lineErode(width, height, y, lut, context);
 			}
 
 			return context.Result;
 		}
 
-		protected static uwMorphContext makeContext(Chord[] chords, int width, int height)
+		/// <summary>
+		/// Fast morphology by Urbach and Wilkinson, Efficient 2-D Grayscale Morphological Transformations
+		/// With Arbitrary Flat Structuring Elements, 2008.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="seData"></param>
+		/// <param name="seWidth"></param>
+		/// <param name="seHeight"></param>
+		/// <returns></returns>
+		public static float[] Dilate(float[] data, int width, int height, float[] seData, int seWidth, int seHeight)
+		{
+			var chords = ToChords(seData, seWidth, seHeight);
+			var context = makeContext(chords, width, height, erosion: false);
+
+			var lut = computeLookupTableDilation(data, width, height, 0, context);
+
+			lineDilate(width, height, 0, lut, context);
+			for (int y = 1; y < height; ++y)
+			{
+				updateLookupTableDilation(data, width, height, y, lut, context);
+				lineDilate(width, height, y, lut, context);
+			}
+
+			return context.Result;
+		}
+
+		protected static uwMorphContext makeContext(Chord[] chords, int width, int height, bool erosion = true)
 		{
 			int maxy = 0, maxx = 0, miny = int.MaxValue, minx = int.MaxValue, maxl = 0;
 			List<int> lengths = new List<int> ();
@@ -247,7 +275,7 @@ namespace MentalAlchemy.Molecules
 			ctx.MinYOffset = miny;
 			ctx.MaxChordLength = maxl;
 			ctx.ChordLengths = lengths.ToArray();
-			ctx.Result = VectorMath.Create(width * height, 65535f);
+			ctx.Result = VectorMath.Create(width * height, erosion ? 65535f : 0f);	// 16-bit color, non-negative.
 
 			var lenIdx = new int[ctx.MaxChordLength + 1];	// array to store indices of chords of specific lengths.
 			//var lenIdx = new Dictionary<int, int>();
@@ -268,7 +296,7 @@ namespace MentalAlchemy.Molecules
 		/// <param name="data"></param>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		protected static float[][][] computeLookupTable(float[] data, int width, int height, int rowIndex, uwMorphContext ctx)
+		protected static float[][][] computeLookupTableErosion(float[] data, int width, int height, int rowIndex, uwMorphContext ctx)
 		{
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
 			int deltaY = ymax - ymin + 1;
@@ -317,7 +345,63 @@ namespace MentalAlchemy.Molecules
 			return table;
 		}
 
-		protected static void updateLookupTable(float[] data, int width, int height, int rowIndex, float[][][] lut, uwMorphContext ctx)
+		/// <summary>
+		/// Computes T_{rowIndex}.
+		/// Algorithm II.1.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		protected static float[][][] computeLookupTableDilation(float[] data, int width, int height, int rowIndex, uwMorphContext ctx)
+		{
+			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
+			int deltaY = ymax - ymin + 1;
+			int radx = (ctx.MaxX - ctx.MinX) / 2, rady = deltaY / 2;
+			int chordLengthsCount = ctx.ChordLengths.Length;
+
+			var dim1 = width + radx * 2;
+			//var dim1 = width;
+			var table = new float[deltaY][][];	//, dim1, deltaY];	// enlarge the 2nd dimension to avoid index out of bounds.
+			for (int i = 0; i < deltaY; ++i)
+			{
+				table[i] = new float[dim1][];
+				for (int j = 0; j < dim1; ++j)
+				{
+					//table[i][j] = new float[chordLengthsCount];
+					table[i][j] = VectorMath.Create(chordLengthsCount, 0f);
+				}
+			}
+
+			for (int y = ymin; y <= ymax; ++y)
+			{
+				int r = y - ymin;
+
+				// copy original values.
+				//var rowOffset = (rowIndex + r) * width;
+				var rowOffset = (rowIndex + y) * width;
+
+				if (rowOffset >= 0)
+				//if (y >= 0)
+				{
+					var tabler = table[r];
+					for (int x = 0; x < width; ++x) { tabler[x + radx][0] = data[rowOffset + x]; }
+					//for (int x = 0; x < dim1; ++x) { table[r][x][0] = x - radx >= 0? data[rowOffset + x - radx] : 0; }
+
+					for (int i = 1; i < chordLengthsCount; ++i)
+					{
+						var previ = i - 1;
+						var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
+						for (var x = 0; x < dim1 - ctx.ChordLengths[i - 1]; ++x)
+						{
+							tabler[x][i] = Math.Max(tabler[x][previ], tabler[x + d][previ]);
+						}
+					}
+				}
+			}
+			return table;
+		}
+
+		protected static void updateLookupTableErosion(float[] data, int width, int height, int rowIndex, float[][][] lut, uwMorphContext ctx)
 		{
 			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
 			var deltaY = ymax - ymin;
@@ -351,6 +435,40 @@ namespace MentalAlchemy.Molecules
 				for (var x = 0; x < dim1 - ctx.ChordLengths[i - 1]; ++x)
 				{
 					lutY[x][i] = Math.Min(lutY[x][previ], lutY[x + d][previ]);
+				}
+			}
+		}
+
+		protected static void updateLookupTableDilation(float[] data, int width, int height, int rowIndex, float[][][] lut, uwMorphContext ctx)
+		{
+			int ymax = ctx.MaxYOffset, ymin = ctx.MinYOffset;
+			var deltaY = ymax - ymin;
+			int radx = (ctx.MaxX - ctx.MinX) / 2;
+			//int dim1 = lut[0].Length;
+			lut[deltaY] = lut[0];	// make a carousel.
+			for (int y = ymin; y < ymax; ++y)
+			{
+				int r = y - ymin;
+				lut[r] = lut[r + 1];
+			}
+
+			// update the last row.
+			var rowOffset = (rowIndex + ctx.MaxYOffset) * width;
+			if (rowOffset >= data.Length) return;
+
+			// use the same trick as with the initialization of the lut.
+			int chordLengthsCount = ctx.ChordLengths.Length;
+			var lutY = lut[deltaY];
+			for (int x = 0; x < width; ++x) { lutY[x + radx][0] = data[rowOffset + x]; }
+
+			var dim1 = lut[0].Length;
+			for (int i = 1; i < chordLengthsCount; ++i)
+			{
+				var d = ctx.ChordLengths[i] - ctx.ChordLengths[i - 1];
+				var previ = i - 1;
+				for (var x = 0; x < dim1 - ctx.ChordLengths[i - 1]; ++x)
+				{
+					lutY[x][i] = Math.Max(lutY[x][previ], lutY[x + d][previ]);
 				}
 			}
 		}
@@ -396,6 +514,52 @@ namespace MentalAlchemy.Molecules
 					var ic = lenIdx[c.Length];
 					var v = lut[row][col][ic];
 					if (v < resVal) { resVal = v; }
+				}
+				ctx.Result[coord] = resVal;
+			}
+		}
+
+		/// <summary>
+		/// Algorithm II.2.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="rowIndex"></param>
+		/// <param name="lut"></param>
+		/// <param name="ctx"></param>
+		protected static void lineDilate(int width, int height, int rowIndex, float[][][] lut, uwMorphContext ctx)
+		{
+			// skip init of the resulting row, since the result was preallocated during context creation.
+
+			int radx = (ctx.MaxX - ctx.MinX) / 2;
+			//int rady = (ctx.MaxYOffset - ctx.MinYOffset) / 2;
+
+			var rowOffset = (rowIndex) * width;
+
+			var lenIdx = ctx.LengthsIndices;
+			var chordCount = ctx.Chords.Length;
+			for (int x = 0; x < width; ++x)
+			{
+				//var coord = rowOffset + x + radx;	// -radx;
+				var coord = rowOffset + x;	// -radx;
+				if (coord < 0) continue;
+
+				var resVal = ctx.Result[coord];
+				for (int k=0; k<chordCount; ++k)
+				{
+					//if (c.X + x < 0) continue;
+					var c = ctx.Chords[k];
+					int row = c.Y - ctx.MinYOffset;
+					int col = x + c.X + radx;
+					//int col = x + c.X;
+					if (row < 0 || col < 0) continue;
+
+					//var len = c.Length;
+					//var ic = Array.IndexOf(ctx.ChordLengths, len);
+					var ic = lenIdx[c.Length];
+					var v = lut[row][col][ic];
+					if (v > resVal) { resVal = v; }
 				}
 				ctx.Result[coord] = resVal;
 			}

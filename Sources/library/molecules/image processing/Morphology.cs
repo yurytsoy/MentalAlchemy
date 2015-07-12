@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MentalAlchemy.Atoms;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,38 @@ namespace MentalAlchemy.Molecules
 {
 	public class Morphology
 	{
+		public static float[] Erode(float[] data, int width, int height, float[] seData, int seWidth, int seHeight)
+		{
+			return ImageProcessingElements.Erode(data, width, height, seData, seWidth, seHeight);
+		}
+
+		public static float[] ErodeBox(float[] data, int height, int width, int seSize)
+		{
+			var seData = VectorMath.Ones(seSize * seSize);
+			return Erode(data, width, height, seData, seSize, seSize);
+		}
+
+		public static float[] ErodeBox(float[] data, int height, int width, int seWidth, int seHeight)
+		{
+			var seData = VectorMath.Ones(seWidth * seHeight);
+			return Erode(data, width, height, seData, seWidth, seHeight);
+		}
+
+		public static float[] Dilate(float[] data, int width, int height, float[] seData, int seWidth, int seHeight)
+		{
+			return ImageProcessingElements.Dilate(data, width, height, seData, seWidth, seHeight);
+		}
+
+		public static float[] DilateBox(float[] data, int height, int width, int seSize)
+		{
+			var seData = VectorMath.Ones(seSize * seSize);
+			return Dilate(data, width, height, seData, seSize, seSize);
+		}
+
+		public static float[] DilateBox(float[] data, int height, int width, int seWidth, int seHeight)
+		{
+			var seData = VectorMath.Ones(seWidth * seHeight);
+			return Dilate(data, width, height, seData, seWidth, seHeight);
+		}
 	}
 }
