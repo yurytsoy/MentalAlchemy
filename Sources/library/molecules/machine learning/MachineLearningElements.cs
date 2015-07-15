@@ -690,7 +690,7 @@ namespace MentalAlchemy.Molecules
 			var probs = new Dictionary<int, float>();
 			foreach (var pair in vps)
 			{
-				VectorMath.Accumulate(ref vector, pair.vector);
+				VectorMath.AccumulateInplace(vector, pair.vector);
 				StructMath.Accumulate(ref counts, pair.counts);
 				StructMath.Accumulate(ref probs, pair.probs);
 			}
@@ -1714,7 +1714,7 @@ namespace MentalAlchemy.Molecules
 		{
 			var size = x.Count;
 
-			var m = VectorMath.DyadicProduct(w);
+			var m = VectorMath.OuterProduct(w);
 
 			var sum = bias;
 			for (var i = 0; i < size; ++i)

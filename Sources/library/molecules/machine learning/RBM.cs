@@ -59,31 +59,43 @@ namespace MentalAlchemy.Molecules
 		}
 
 		/// <summary>
-		/// Train using CD1.
+		/// Performs training for the given number of epochs.
+		/// The algorithm follows Algorithm 1 from (p. 60):
+		/// http://www.iro.umontreal.ca/~bengioy/papers/ftml_book.pdf
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="epochs"></param>
 		public void Train(List<float[]> data, int epochs)
 		{
+			// preallocate matrices.
+			var x1h1 = MatrixMath.Zeros(VisibleNodesCount, HiddenNodesCount);
+			var x2h2 = MatrixMath.Zeros(VisibleNodesCount, HiddenNodesCount);
 			for (int t = 0; t < epochs; ++t)
 			{
-				foreach (var v in data)
+				foreach (var x1 in data)
 				{
-					var statsData = MatrixMath.Zeros(VisibleNodesCount, HiddenNodesCount);
-					var statsModel = MatrixMath.Zeros(VisibleNodesCount, HiddenNodesCount);
-
 					// compute the network response (hidden units) to the [data].
-					var hstate = ComputeHiddenStates(v, binary: true);
-					UpdateStatsInplace(statsData, v, hstate);	// update the <v_i h_j>_{data}
+					var h1 = ComputeHiddenStates(x1, binary: true);
+					var x2 = ComputeVisibleStates(h1, binary: true);
+					var h2 = ComputeHiddenStates(x2, binary: false);
 
-					// compute the network response by itself (model) using a reconstruction technique from Hinton (2002).
-					// update the <v_i h_j>_{recon}
-					var vstate = ComputeVisibleStates(hstate);
-					UpdateStatsInplace(statsModel, vstate, hstate);	// update the <v_i h_j>_{data}
+					// update weights
+					VectorMath.OuterProduct(x1, h1, x1h1);
+					VectorMath.OuterProduct(x2, h2, x2h2);
+					MatrixMath.SubInplace(x1h1, x2h2);
+					MatrixMath.MulInplace(x1h1, _learningRate);
+					_weightDeltas = x1h1;
+					MatrixMath.AccumulateInplace(_weights, _weightDeltas);
 
-					// update weights.
-					ComputeWeightDeltas(statsData, statsModel);
-					UpdateWeights ();
+					// update visible biases.
+					var subx = VectorMath.Sub (x1, x2);
+					VectorMath.MulInplace(subx, _learningRate);
+					VectorMath.AccumulateInplace(_vBiases, subx);
+
+					// update hidden biases.
+					VectorMath.SubInplace(h1, h2);
+					VectorMath.MulInplace(h1, _learningRate);
+					VectorMath.AccumulateInplace(_hBiases, h1);
 				}
 			}
 		}
@@ -130,12 +142,14 @@ namespace MentalAlchemy.Molecules
 			}
 		}
 
-		public float[] ComputeVisibleStates(float[] hstates)
+		public float[] ComputeVisibleStates(float[] hstates, bool binary = true)
 		{
+			var actFunc = binary == true ? (ActivationFunction)ActivationFunctions.SigmoidProbBinary : (ActivationFunction)ActivationFunctions.Sigmoid;
+
 			var res = new float[VisibleNodesCount];
 			for (int i = 0; i < VisibleNodesCount; ++i )
 			{
-				var tmp = ActivationFunctions.Sigmoid(_weights[i], hstates, _vBiases[i], 1f);
+				var tmp = actFunc(_weights[i], hstates, _vBiases[i], 1f);
 				res[i] = tmp;
 			}
 			return res;

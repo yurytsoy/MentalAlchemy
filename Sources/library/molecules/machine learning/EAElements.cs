@@ -769,7 +769,7 @@ namespace MentalAlchemy.Molecules
 				var extras = (float[])fitVals[0].Extra.ToArray().Clone();
 				for (int i = 1; i < fitVals.Length; i++)
 				{
-					VectorMath.Accumulate(ref extras, fitVals[i].Extra.ToArray());
+					VectorMath.AccumulateInplace(extras, fitVals[i].Extra.ToArray());
 				}
 				// perform averaging.
 				VectorMath.Mul(ref extras, 1.0f / fitVals.Length);
@@ -1181,13 +1181,13 @@ namespace MentalAlchemy.Molecules
 						//var rand2 = w2.NextDouble() * dist;
 						var rand2 = w2.NextDouble();
 						var tempV = VectorMath.Mul(ort, (float)rand2);
-						VectorMath.Accumulate(ref offspring, tempV);
+						VectorMath.AccumulateInplace(offspring, tempV);
 					}
 
 					// 2. calculate selected parent-defined offset.
 					//w1.Sigma = VectorMath.L2Norm(dp);
 					var rand1 = w1.NextDouble();
-					VectorMath.Accumulate(ref offspring, VectorMath.Mul(dp, (float)rand1));
+					VectorMath.AccumulateInplace(offspring, VectorMath.Mul(dp, (float)rand1));
 				}
 				else
 				{	// all parents are equal.
@@ -1200,7 +1200,7 @@ namespace MentalAlchemy.Molecules
 					}
 					//w1.Sigma = oldSigma;
 
-					VectorMath.Accumulate(ref offspring, tempV);
+					VectorMath.AccumulateInplace(offspring, tempV);
 				}
 
 

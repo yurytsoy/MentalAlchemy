@@ -1663,7 +1663,7 @@ namespace MentalAlchemy.Molecules
 				VectorMath.Mul(ref w, VectorMath.DotProduct(p, v));
 				w = VectorMath.Sub(p, w);
 
-				var temp = MatrixMath.Sub(VectorMath.DyadicProduct(v, w), VectorMath.DyadicProduct(w, v));
+				var temp = MatrixMath.Sub(VectorMath.OuterProduct(v, w), VectorMath.OuterProduct(w, v));
 				subA = MatrixMath.Sub(subA, temp);
 
 				MatrixMath.SetSubmatrix(ref t, subA, k + 1, k + 1);
@@ -1692,7 +1692,7 @@ namespace MentalAlchemy.Molecules
 				var res = MatrixMath.Identity(size);
 
 				var norm = VectorMath.DotProduct(v, v);
-				var vvt = VectorMath.DyadicProduct(v);
+				var vvt = VectorMath.OuterProduct(v);
 				vvt = MatrixMath.Mul(vvt, 2f / norm);
 
 				res = MatrixMath.Sub(res, vvt);
@@ -1712,7 +1712,7 @@ namespace MentalAlchemy.Molecules
 				var res = MatrixMath.IdentityD(size);
 
 				var norm = VectorMath.DotProduct(v, v);
-				var vvt = VectorMath.DyadicProduct(v);
+				var vvt = VectorMath.OuterProduct(v);
 				vvt = MatrixMath.Mul(vvt, 2.0 / norm);
 
 				res = MatrixMath.Sub(res, vvt);
@@ -1759,7 +1759,7 @@ namespace MentalAlchemy.Molecules
 				w = VectorMath.Mul(w, beta);
 				
 				var res = (float[,])a.Clone();
-				var vwt = VectorMath.DyadicProduct(v, w);
+				var vwt = VectorMath.OuterProduct(v, w);
 				res = MatrixMath.Add(res, vwt);
 
 				return res;
@@ -1783,7 +1783,7 @@ namespace MentalAlchemy.Molecules
 				w = VectorMath.Mul(w, beta);
 
 				var res = (float[,])a.Clone();
-				var wvt = VectorMath.DyadicProduct(w, v);
+				var wvt = VectorMath.OuterProduct(w, v);
 				res = MatrixMath.Add(res, wvt);
 
 				return res;

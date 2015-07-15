@@ -203,7 +203,7 @@ namespace MentalAlchemy.Molecules
 				if (FitnessComparator.IsWorse(offsp[i].Fitness, bestFit)) continue;
                 
 				nImprovement++;
-				VectorMath.Accumulate(ref xImprovement, offsp[i].Genes.ToArray());	// what if not offsp[i], but (offsp[i] - bestInd) should be used?
+				VectorMath.AccumulateInplace(xImprovement, offsp[i].Genes.ToArray());	// what if not offsp[i], but (offsp[i] - bestInd) should be used?
 			}
 
 			//

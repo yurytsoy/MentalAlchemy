@@ -532,7 +532,7 @@ namespace MentalAlchemy.Atoms
 			var res = (float[])v[0].Clone();
 			for (int i = 1; i < v.Count; i++)
 			{
-				Accumulate(ref res, v[i]);
+				AccumulateInplace(res, v[i]);
 			}
 			Divide(ref res, v.Count);
 			return res;
@@ -1650,11 +1650,29 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
+		/// Element-wise substraction of two vectors.
+		/// The result is written into the first argument vector.
+		/// </summary>
+		/// <param name="v1">1st vector.</param>
+		/// <param name="v2">2nd vector.</param>
+		public static void SubInplace(float[] v1, float[] v2)
+		{
+			int size = v1.Length;
+
+			for (int i = 0; i < size; i++)
+			{
+				v1[i] -= v2[i];
+			}
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
 		/// Sums given arrays. The result is written into input array.
 		/// </summary>
 		/// <param name="v">Input array.</param>
 		/// <param name="arg">Summand array.</param>
-		public static void Accumulate(ref float[] v, float[] arg)
+		public static void AccumulateInplace(float[] v, float[] arg)
 		{
 			if (v.Length != arg.Length) return;
 
@@ -1861,6 +1879,30 @@ namespace MentalAlchemy.Atoms
 			return res;
 		}
 
+		///// <summary>
+		///// [atomic]
+		///// 
+		///// Calculates dyadic product of vector v.
+		///// </summary>
+		///// <param name="v">Input vector.</param>
+		///// <returns>Resulting matrix = v * v', where v' -- is a transposed v.</returns>
+		//public static float[,] OuterProduct(float[] v)
+		//{
+		//	int size = v.Length;
+		//	var res = new float[size, size];
+
+		//	for (int i = 0; i < size; ++i)
+		//	{
+		//		res[i,i] = v[i] * v[i];
+		//		for (int j = i + 1; j < size; ++j)
+		//		{
+		//			res[i,j] = res[j,i] = v[i] * v[j];
+		//		}
+		//	}
+
+		//	return res;
+		//}
+
 		/// <summary>
 		/// [atomic]
 		/// 
@@ -1868,31 +1910,7 @@ namespace MentalAlchemy.Atoms
 		/// </summary>
 		/// <param name="v">Input vector.</param>
 		/// <returns>Resulting matrix = v * v', where v' -- is a transposed v.</returns>
-		public static float[,] DyadicProduct(float[] v)
-		{
-			int size = v.Length;
-			var res = new float[size, size];
-
-			for (int i = 0; i < size; ++i)
-			{
-				res[i,i] = v[i] * v[i];
-				for (int j = i + 1; j < size; ++j)
-				{
-					res[i,j] = res[j,i] = v[i] * v[j];
-				}
-			}
-
-			return res;
-		}
-
-		/// <summary>
-		/// [atomic]
-		/// 
-		/// Calculates dyadic product of vector v.
-		/// </summary>
-		/// <param name="v">Input vector.</param>
-		/// <returns>Resulting matrix = v * v', where v' -- is a transposed v.</returns>
-		public static float[,] DyadicProduct(IList<float> v)
+		public static float[,] OuterProduct(IList<float> v)
 		{
 			int size = v.Count;
 			var res = new float[size, size];
@@ -1917,7 +1935,7 @@ namespace MentalAlchemy.Atoms
 		/// </summary>
 		/// <param name="v">Input vector.</param>
 		/// <returns>Resulting matrix = v * v', where v' -- is a transposed v.</returns>
-		public static double[,] DyadicProduct(double[] v)
+		public static double[,] OuterProduct(double[] v)
 		{
 			int size = v.Length;
 			var res = new double[size, size];
@@ -1937,26 +1955,47 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
-		/// Calculates dyadic product of the given vectors.
+		/// Calculates outer (dyadic) product of the given vectors.
 		/// </summary>
 		/// <param name="v">1st input vector.</param>
 		/// <param name="w">2nd input vector.</param>
 		/// <returns>Resulting matrix = v * w', where w' -- is a transposed w.</returns>
-		public static float[,] DyadicProduct(float[] v, float[] w)
+		public static float[][] OuterProduct(float[] v, float[] w)
 		{
 			int height = v.Length;
 			int width = w.Length;
-			var res = new float[height, width];
-
+			var res = MatrixMath.Zeros(height, width);
 			for (int i = 0; i < height; ++i)
 			{
+				var resi = res[i];
 				for (int j = 0; j < width; ++j)
 				{
-					res[i, j] = v[i] * w[j];
+					resi[j] = v[i] * w[j];
 				}
 			}
-
 			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Calculates outer (dyadic) product of the given vectors.
+		/// </summary>
+		/// <param name="v">1st input vector.</param>
+		/// <param name="w">2nd input vector.</param>
+		/// <returns>Resulting matrix = v * w', where w' -- is a transposed w.</returns>
+		public static void OuterProduct(float[] v, float[] w, float[][] res)
+		{
+			int height = v.Length;
+			int width = w.Length;
+			for (int i = 0; i < height; ++i)
+			{
+				var resi = res[i];
+				for (int j = 0; j < width; ++j)
+				{
+					resi[j] = v[i] * w[j];
+				}
+			}
 		}
 
 		/// <summary>

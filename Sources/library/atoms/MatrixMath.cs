@@ -989,7 +989,7 @@ namespace MentalAlchemy.Atoms
 			var sum = m[0];
 			for (int i = 1; i < m.Count; i++)
 			{
-				VectorMath.Accumulate(ref sum, m[i]);
+				VectorMath.AccumulateInplace(sum, m[i]);
 			}
 			return sum;
 		}
@@ -1337,6 +1337,30 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
+		/// Adds two given matrices.
+		/// </summary>
+		/// <param name="a">1st matrix.</param>
+		/// <param name="b">2nd matrix.</param>
+		/// <returns>Addition result.</returns>
+		public static float[,] Add(float[,] a, float[][] b)
+		{
+			int height = a.GetLength(0), width = a.GetLength(1);
+			var res = (float[,])a.Clone();
+
+			for (int i = 0; i < height; i++)
+			{
+				var bi = b[i];
+				for (int j = 0; j < width; j++)
+				{
+					res[i, j] += bi[j];
+				}
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
 		/// Performs subtraction of the given matrices.
 		/// </summary>
 		/// <param name="m1">1st matrix.</param>
@@ -1366,6 +1390,31 @@ namespace MentalAlchemy.Atoms
 		/// <param name="m1">1st matrix.</param>
 		/// <param name="m2">Matrix to sub.</param>
 		/// <returns>Addition result.</returns>
+		public static float[,] Sub(float[,] m1, float[][] m2)
+		{
+			int height = m1.GetLength(0), width = m2.GetLength(1);
+			var res = new float[height, width];
+
+			for (int i = 0; i < height; i++)
+			{
+				var m2i = m2[i];
+				for (int j = 0; j < width; j++)
+				{
+					res[i, j] = m1[i, j] - m2i[j];
+				}
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Performs subtraction of the given matrices.
+		/// </summary>
+		/// <param name="m1">1st matrix.</param>
+		/// <param name="m2">Matrix to sub.</param>
+		/// <returns>Addition result.</returns>
 		public static float[][] Sub(float[][] m1, float[][] m2)
 		{
 			int height = m1.Length, width = m1[0].Length;
@@ -1381,6 +1430,29 @@ namespace MentalAlchemy.Atoms
 			}
 
 			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Performs inplace subtraction of the value from a given matrix.
+		/// </summary>
+		/// <param name="m1">1st matrix.</param>
+		/// <param name="m2">Matrix to sub.</param>
+		/// <returns>Addition result.</returns>
+		public static void SubInplace(float[][] m, float[][] m2)
+		{
+			int height = m.Length, width = m[0].Length;
+
+			for (int i = 0; i < height; i++)
+			{
+				var mi = m[i];
+				var m2i = m2[i];
+				for (int j = 0; j < width; j++)
+				{
+					mi[j] -= m2i[j];
+				}
+			}
 		}
 
 		/// <summary>
