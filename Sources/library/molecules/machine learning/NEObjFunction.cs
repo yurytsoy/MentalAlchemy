@@ -195,7 +195,7 @@ namespace MentalAlchemy.Molecules
 			{
 				cols[i] = VectorMath.NormalizeL2(cols[i]);
 			}
-			var gram = MatrixMath.ComputeGramMatrix(cols);
+			var gram = MatrixMath.ComputeGramMatrixAs2DArray(cols);
 			res.Extra.Add(Numerics.Determinant(gram, 0f));
 			res.Extra.Add(Numerics.Rank(gram, 1e-3f));
 			return res;
@@ -236,7 +236,7 @@ namespace MentalAlchemy.Molecules
 
 			//
 			// calculate matrix of absolute correlation coefficients.
-			var gram = MatrixMath.ComputeGramMatrix(cols);
+			var gram = MatrixMath.ComputeGramMatrixAs2DArray(cols);
 			var corabs = MatrixMath.Abs(gram);
 
 			//
@@ -304,7 +304,7 @@ namespace MentalAlchemy.Molecules
 
 			//
 			// calculate matrix of absolute correlation coefficients.
-			var gram = MatrixMath.ComputeGramMatrix(cols);
+			var gram = MatrixMath.ComputeGramMatrixAs2DArray(cols);
 			var corabs = MatrixMath.Abs(gram);
 
 			//
@@ -368,7 +368,7 @@ namespace MentalAlchemy.Molecules
 
 			//
 			// calculate matrix of absolute correlation coefficients.
-			var gram = MatrixMath.ComputeGramMatrix(cols);
+			var gram = MatrixMath.ComputeGramMatrixAs2DArray(cols);
 
 			//
 			// calculate error as sum of determinant and rank.
@@ -423,7 +423,7 @@ namespace MentalAlchemy.Molecules
 
 			//
 			// calculate determinant of the Gram matrix.
-			var gram = MatrixMath.ComputeGramMatrix(cols);
+			var gram = MatrixMath.ComputeGramMatrixAs2DArray(cols);
 			var det = Numerics.Determinant(gram, 0f);
 
 			//

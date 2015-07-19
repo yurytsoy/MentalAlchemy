@@ -162,6 +162,36 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
+		/// Returns arbitrary submatrix of the given matrix.
+		/// </summary>
+		/// <typeparam name="T">Type name.</typeparam>
+		/// <param name="m">Input matrix.</param>
+		/// <param name="beginRow">Beginning row index.</param>
+		/// <param name="endRow">Ending row index.</param>
+		/// <param name="beginCol">Beginning column index.</param>
+		/// <param name="endCol">Ending column index.</param>
+		/// <returns>Submatrix.</returns>
+		public static T[] Submatrix<T>(T[] m, int width, int height, int beginRow, int beginCol, int subHeight, int subWidth)
+		{
+			var res = new T[subHeight * subWidth];
+
+			for (int i = beginRow; i < beginRow + subHeight; i++)
+			{
+				var offset = i * width + beginCol;
+				var endRowOffset = (i + 1) * width;
+				var destOffset = (i - beginRow) * subWidth;
+				for (int j = offset, j1 = 0; j < endRowOffset && j1 < subWidth; ++j, ++j1 )
+				{
+					res[destOffset + j1] = m[j];
+				}
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
 		/// Inserts submatrix into the given matrix at the prescribed indices.
 		/// </summary>
 		/// <typeparam name="T">Type name.</typeparam>
@@ -201,6 +231,29 @@ namespace MentalAlchemy.Atoms
 			var res = (T[,])m.Clone();
 			SetSubmatrix(ref res, subM, beginRow, beginCol);
 			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Inserts submatrix into the given matrix at the prescribed indices.
+		/// </summary>
+		/// <typeparam name="T">Type name.</typeparam>
+		/// <param name="m">Input matrix.</param>
+		/// <param name="subM">Submatrix.</param>
+		/// <param name="beginRow">Row beginning index.</param>
+		/// <param name="beginCol">Column ending index.</param>
+		public static void SetSubmatrix<T>(T[] m, int width, int height, T[] subM, int subWidth, int subHeight, int beginRow, int beginCol)
+		{
+			for (int i = beginRow; i < beginRow + subHeight; ++i )
+			{
+				var offsetRow = i * width;
+				var offsetRowSrc = (i - beginRow) * subWidth;
+				for (int j = beginCol, j1 = 0; j < beginCol + subWidth && j1 < subWidth; ++j, ++j1 )
+				{
+					m[offsetRow + j] = subM[offsetRowSrc + j1];
+				}
+			}
 		}
 
 		/// <summary>
@@ -1112,6 +1165,27 @@ namespace MentalAlchemy.Atoms
 		/// <param name="a">1st matrix.</param>
 		/// <param name="b">2nd matrix.</param>
 		/// <returns>Resulting matrix.</returns>
+		public static float[][] Mul(float[][] a, float b)
+		{
+			int height = a.Length;
+			var res = new float[height][];
+			for (int i = 0; i < height; i++)
+			{
+				res[i] = VectorMath.Mul (a[i], b);
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Performs multiplication of two given matrices.
+		/// C = AB.
+		/// </summary>
+		/// <param name="a">1st matrix.</param>
+		/// <param name="b">2nd matrix.</param>
+		/// <returns>Resulting matrix.</returns>
 		public static float[][] Mul(float[][] a, float[][] b)
 		{
 			int height = a.Length, width = b.Length;
@@ -1878,6 +1952,25 @@ namespace MentalAlchemy.Atoms
 		/// <typeparam name="T"></typeparam>
 		/// <param name="data">Input 2d array.</param>
 		/// <returns>Vector containing input array's elements.</returns>
+		public static T[] ConvertToVector<T>(IList<T[]> data)
+		{
+			int height = data.Count, width = data[0].Length;
+			var res = new T[height * width];
+			for (int i = 0; i < height; i++)
+			{
+				Array.Copy(data[i], 0, res, i * width, width);
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Converts given 2d array into an 1d vector.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="data">Input 2d array.</param>
+		/// <returns>Vector containing input array's elements.</returns>
 		public static T[] ConvertToVector<T>(T[,] data)
 		{
 			var res = new T[data.Length];
@@ -2136,6 +2229,82 @@ namespace MentalAlchemy.Atoms
 				}
 			}
 
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Composes a matrix from non-overlapping square patches.
+		/// The patches are ordered from Top-Left to Bottom-Right.
+		/// </summary>
+		/// <param name="patches"></param>
+		/// <param name="countWidth">Number of patches in horizontal direction.</param>
+		/// <param name="countHeight">Number of patches in vertical direction.</param>
+		/// <returns></returns>
+		public static float[] ToMatrix(IList<float[]> patches, int patchSize, int countWidth, int countHeight)
+		{
+			int width = patchSize * countWidth, height = patchSize * countHeight;
+			var res = new float[width * height];
+
+			for (int i = 0; i < patches.Count; ++i )
+			{
+				var row = i / countWidth;
+				var col = i % countWidth;
+				SetSubmatrix(res, width, height, patches[i], patchSize, patchSize, row * patchSize, col * patchSize);
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Composes a matrix from non-overlapping square patches.
+		/// The patches are ordered from Top-Left to Bottom-Right.
+		/// </summary>
+		/// <param name="patches"></param>
+		/// <param name="countWidth">Number of patches in horizontal direction.</param>
+		/// <param name="countHeight">Number of patches in vertical direction.</param>
+		/// <returns></returns>
+		public static float[] ToMatrix(IList<float[]> patches, int patchWidth, int patchHeight, int countWidth, int countHeight)
+		{
+			int width = patchWidth * countWidth, height = patchHeight * countHeight;
+			var res = new float[width * height];
+
+			for (int i = 0; i < patches.Count; ++i)
+			{
+				var row = i / countWidth;
+				var col = i % countWidth;
+				SetSubmatrix(res, width, height, patches[i], patchWidth, patchHeight, row * patchHeight, col * patchWidth);
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// Breaks the given matrix into non-overlaping adjacent square patches of size [patchSize].
+		/// The patches are ordered from Top-Left to Bottom-Right.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="data"></param>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		/// <param name="patchSize"></param>
+		/// <returns></returns>
+		public static List<T[]> ToPatches<T>(T[] data, int width, int height, int patchSize)
+		{ 
+			var res = new List<T[]> ();
+			if (data == null) return res;
+
+			for (int i = 0; i < height; i += patchSize )
+			{
+				for (int j = 0; j < width; j += patchSize )
+				{
+					var tmp = Submatrix(data, width, height, i, j, patchSize, patchSize);
+					res.Add(tmp);
+				}
+			}
 			return res;
 		}
 		#endregion
@@ -3392,7 +3561,31 @@ namespace MentalAlchemy.Atoms
 		/// </summary>
 		/// <param name="vs">Input set of vectors.</param>
 		/// <returns>Gram matrix.</returns>
-		public static float[,] ComputeGramMatrix (List<float[]> vs)
+		public static float[][] ComputeGramMatrixAsJaggedArray(IList<float[]> vs)
+		{
+			var size = vs.Count;
+			var res = Zeros (size, size);
+			for (int i = 0; i < size; ++i)
+			{
+				var resi = res[i];
+				resi[i] = VectorMath.DotProduct(vs[i], vs[i]);
+				for (int j = i + 1; j < size; j++)
+				{
+					resi[j] = res[j][i] = VectorMath.DotProduct(vs[i], vs[j]);
+				}
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [molecule]
+		/// 
+		/// Computes the Gram matrix for the given set of vectors.
+		/// </summary>
+		/// <param name="vs">Input set of vectors.</param>
+		/// <returns>Gram matrix.</returns>
+		public static float[,] ComputeGramMatrixAs2DArray (IList<float[]> vs)
 		{
 			var size = vs.Count;
 			var res = new float[size,size];

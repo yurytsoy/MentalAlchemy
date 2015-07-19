@@ -524,7 +524,7 @@ namespace MentalAlchemy.Molecules
 		{
 			var m = ConvertToMatrix(data);
 			var cols = MatrixMath.ConvertToColumnsList(m);
-			return MatrixMath.ComputeGramMatrix(cols);
+			return MatrixMath.ComputeGramMatrixAs2DArray(cols);
 		}
 
 		/// <summary>

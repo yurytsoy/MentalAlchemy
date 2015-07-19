@@ -19,6 +19,21 @@ namespace MentalAlchemy.Molecules
 		/// </summary>
 		/// <param name="table">Source table.</param>
 		/// <returns>Resulting bitmap.</returns>
+		public static Bitmap ToBitmap(float[][] data, bool normalize = false)
+		{
+			int width = data[0].Length, height = data.Length;
+			var dataV = MatrixMath.ConvertToVector (data);
+			if (normalize) { dataV = VectorMath.ToRange(dataV, 0, 255); }
+			return ToBitmap(dataV, width, height);
+		}
+
+		/// <summary>
+		/// [molecule]
+		/// 
+		/// Creates a bitmap from the given table of floats.
+		/// </summary>
+		/// <param name="table">Source table.</param>
+		/// <returns>Resulting bitmap.</returns>
 		public static Bitmap ToBitmap(float[] data, int width, int height)
 		{
 			var res = new Bitmap(width, height);
@@ -46,6 +61,23 @@ namespace MentalAlchemy.Molecules
 			res.UnlockBits(bmpData);
 
 			return res;
+		}
+
+		/// <summary>
+		/// [molecule]
+		/// 
+		/// Creates a bitmap from the given collection of patches organized in a grid.
+		/// All patches are supposed to have the same dimensions and are ordered
+		/// from top-left to bottom-right.
+		/// </summary>
+		/// <param name="patches">Patches.</param>
+		/// <returns>Resulting bitmap.</returns>
+		public static Bitmap ToBitmapGrid(IList<float[]> patches, int patchWidth, int patchHeight, int gridWidth, int gridHeight)
+		{
+			var resW = MatrixMath.ToMatrix(patches, patchWidth, patchHeight, gridWidth, gridHeight);
+			var resSize = (int)Math.Sqrt(resW.Length);
+			var resBmp = ImageProcessingElements.ToBitmap(VectorMath.ToRange(resW, 0, 255), gridWidth * patchWidth, gridHeight * patchHeight);
+			return resBmp;
 		}
 
 		/// <summary>
@@ -83,6 +115,85 @@ namespace MentalAlchemy.Molecules
 
 			image.UnlockBits(bmpData);
 			return res;
+		}
+
+		/// <summary>
+		/// Convert given image into colleciton of horizontal chords.
+		/// The image is supposed to be black and white, however the method
+		/// simply compares if each pixel is > 0 or not.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <param name="witdh"></param>
+		/// <param name="height"></param>
+		/// <returns></returns>
+		public static Chord[] ToChords(float[] data, int width, int height, int centerX = 0, int centerY = 0)
+		{
+			if (centerX == 0) centerX = width / 2;
+			if (centerY == 0) centerY = height / 2;
+
+			var res = new List<Chord>();
+			for (int i = 0; i < height; ++i)
+			{
+				var rowOffset = i * width;
+				var chordY = i - centerY;
+				var rowChords = ToChords(VectorMath.Subvector(data, rowOffset, rowOffset + width - 1));
+				if (rowChords.Length > 0)
+				{
+					foreach (var chord in rowChords)
+					{
+						chord.Y = chordY;
+						chord.X -= centerX;
+					}
+					res.AddRange(rowChords);
+				}
+			}
+			return res.ToArray();
+		}
+
+		/// <summary>
+		/// Converts 1D array into chords.
+		/// The image data is supposed to be black and white, however the method
+		/// simply compares if each pixel is > 0 or not.
+		/// </summary>
+		/// <param name="data"></param>
+		/// <returns></returns>
+		public static Chord[] ToChords(float[] data)
+		{
+			var res = new List<Chord>();
+
+			// find the first positive element.
+			var start = 0;
+			foreach (var el in data)
+			{
+				if (el > 0) { break; }
+				start++;
+			}
+
+			var tmpChord = new Chord() { X = start, Y = 0, Length = 1 };
+			for (int i = start + 1; i < data.Length; ++i)
+			{
+				if (data[i] > 0 && data[i - 1] > 0)
+				{	// continue current chord.
+					tmpChord.Length++;
+				}
+				else if (data[i] > 0 && data[i - 1] <= 0)
+				{	// new chord.
+					tmpChord = new Chord() { X = i, Y = 0, Length = 1 };
+				}
+				else if (data[i] <= 0 && data[i - 1] > 0)
+				{	// break the current chord.
+					res.Add(tmpChord);
+					tmpChord = null;
+				}
+				// ignore the case when both data[i] and data[i-1] < 0
+			}
+
+			if (tmpChord != null)
+			{
+				res.Add(tmpChord);
+			}
+
+			return res.ToArray();
 		}
 		#endregion
 
@@ -566,84 +677,34 @@ namespace MentalAlchemy.Molecules
 		}
 		#endregion
 
+		#region - Transforms. -
 		/// <summary>
-		/// Convert given image into colleciton of horizontal chords.
-		/// The image is supposed to be black and white, however the method
-		/// simply compares if each pixel is > 0 or not.
+		/// Scales given array using the Nearest neighbor method.
 		/// </summary>
 		/// <param name="data"></param>
-		/// <param name="witdh"></param>
-		/// <param name="height"></param>
+		/// <param name="factor"></param>
 		/// <returns></returns>
-		public static Chord[] ToChords (float[] data, int width, int height, int centerX = 0, int centerY = 0)
-		{
-			if (centerX == 0) centerX = width / 2;
-			if (centerY == 0) centerY = height / 2;
+		public static float[][] ScaleNearestNeighbor(float[][] data, float factor)
+		{ 
+			int width = data[0].Length, height = data.Length;
+			int newWidth = (int)(width * factor), newHeight = (int)(height * factor);
 
-			var res = new List<Chord>();
-			for (int i = 0; i < height; ++i )
+			var res = new float[newHeight][];
+			var factor_1 = 1f / factor;
+			for (int i = 0; i < newHeight; ++i )
 			{
-				var rowOffset = i * width;
-				var chordY = i - centerY;
-				var rowChords = ToChords(VectorMath.Subvector (data, rowOffset, rowOffset + width - 1));
-				if (rowChords.Length > 0)
+				res[i] = new float[newWidth];
+
+				var resi = res[i];
+				var datai = data[(int)(i * factor_1)];
+				for (int j = 0; j < newWidth; ++j )
 				{
- 					foreach (var chord in rowChords)
-					{
-						chord.Y = chordY;
-						chord.X -= centerX;
-					}
-					res.AddRange(rowChords);
+					resi[j] = datai[(int)(j * factor_1)];
 				}
 			}
-			return res.ToArray();
+			return res;
 		}
-
-		/// <summary>
-		/// Converts 1D array into chords.
-		/// The image data is supposed to be black and white, however the method
-		/// simply compares if each pixel is > 0 or not.
-		/// </summary>
-		/// <param name="data"></param>
-		/// <returns></returns>
-		public static Chord[] ToChords(float[] data)
-		{
-			var res = new List<Chord>();
-
-			// find the first positive element.
-			var start = 0;
-			foreach (var el in data)
-			{
-				if (el > 0) { break; }
-				start++;
-			}
-
-			var tmpChord = new Chord() { X = start, Y = 0, Length = 1 };
-			for (int i = start + 1; i < data.Length; ++i )
-			{
-				if (data[i] > 0 && data[i - 1] > 0)
-				{	// continue current chord.
-					tmpChord.Length++;
-				}
-				else if (data[i] > 0 && data[i - 1] <= 0)
-				{	// new chord.
-					tmpChord = new Chord() { X = i, Y = 0, Length = 1 };
-				}
-				else if (data[i] <= 0 && data[i - 1] > 0)
-				{	// break the current chord.
-					res.Add(tmpChord);
-					tmpChord = null;
-				} 
-				// ignore the case when both data[i] and data[i-1] < 0
-			}
-
-			if (tmpChord != null) 
-			{
-				res.Add(tmpChord);
-			}
-
-			return res.ToArray();
-		}
+		#endregion
 	}
 
 	public class Chord 

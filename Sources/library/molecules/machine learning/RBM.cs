@@ -22,11 +22,18 @@ namespace MentalAlchemy.Molecules
 		protected float[] _hBiases;	// hidden biases.
 		protected float[] _vBiases;	// visible biases.
 
-		protected float _learningRate = 0.1f;
-		protected int _miniBatchSize = 10;
+		protected float _learningRate = 0.01f;
+		// TODO: protected int _miniBatchSize = 10;
 
 		public int HiddenNodesCount { get { return _hBiases != null ? _hBiases.Length : 0; } }
 		public int VisibleNodesCount { get { return _vBiases != null ? _vBiases.Length : 0; } }
+		public float LearningRate { get { return _learningRate; } set { _learningRate = value; } }
+
+		/// <summary>
+		/// Weights[i][:] -- weights from i-th input node.
+		/// Weights[:][j] -- weights (receptive field) to the j-th hidden node.
+		/// </summary>
+		public float[][] Weights { get { return _weights; } }
 
 		/// <summary>
 		/// Creates RBM using the number of visible and hidden units.
@@ -55,7 +62,7 @@ namespace MentalAlchemy.Molecules
 				MatrixMath.AccumulateInplace (_weights, tmp);
 			}
 			MatrixMath.SubInplace(_weights, count/2);
-			MatrixMath.MulInplace(_weights, 2/count * 0.01f);	// scale to have values within [-.01; +.01]
+			MatrixMath.MulInplace(_weights, 2f/count * 0.01f);	// scale to have values within [-.01; +.01]
 		}
 
 		/// <summary>
@@ -65,7 +72,7 @@ namespace MentalAlchemy.Molecules
 		/// </summary>
 		/// <param name="data"></param>
 		/// <param name="epochs"></param>
-		public void Train(List<float[]> data, int epochs)
+		public void Train(List<float[]> data, int epochs, float momentum = 0f)
 		{
 			// preallocate matrices.
 			var x1h1 = MatrixMath.Zeros(VisibleNodesCount, HiddenNodesCount);
@@ -84,6 +91,12 @@ namespace MentalAlchemy.Molecules
 					VectorMath.OuterProduct(x2, h2, x2h2);
 					MatrixMath.SubInplace(x1h1, x2h2);
 					MatrixMath.MulInplace(x1h1, _learningRate);
+					if (momentum > 0)
+					{
+						var delta = MatrixMath.Mul(_weightDeltas, momentum);
+						MatrixMath.MulInplace(x1h1, (1 - momentum));
+						MatrixMath.AccumulateInplace (x1h1, delta);
+					}
 					_weightDeltas = x1h1;
 					MatrixMath.AccumulateInplace(_weights, _weightDeltas);
 
@@ -102,16 +115,28 @@ namespace MentalAlchemy.Molecules
 
 		public float Test(List<float[]> data)
 		{
-			var er = 0f;
-			foreach (var v in data)
-			{
-				var hstate = ComputeHiddenStates(v, binary: true);
-				var vstate = ComputeVisibleStates(hstate);
+			var recons = Reconstruct(data);
 
-				var dist = VectorMath.EuclidianDistance(v, vstate);
+			var er = 0f;
+			for (int i=0; i<data.Count; ++i)
+			{
+				var dist = VectorMath.EuclidianDistance(data[i], recons[i]);
 				er += dist;
 			}
 			return er / data.Count;
+		}
+
+		public List<float[]> Reconstruct(IList<float[]> data, bool binaryHidden = true, bool binaryVisible = true)
+		{
+			var res = new List<float[]>();
+			foreach (var v in data)
+			{
+				var hstate = ComputeHiddenStates(v, binary: binaryHidden);
+				var vstate = ComputeVisibleStates(hstate, binary: binaryVisible);
+
+				res.Add(vstate);
+			}
+			return res;
 		}
 
 		protected void ComputeWeightDeltas(float[][] statData, float[][] statModel)

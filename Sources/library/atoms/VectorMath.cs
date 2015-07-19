@@ -1879,30 +1879,6 @@ namespace MentalAlchemy.Atoms
 			return res;
 		}
 
-		///// <summary>
-		///// [atomic]
-		///// 
-		///// Calculates dyadic product of vector v.
-		///// </summary>
-		///// <param name="v">Input vector.</param>
-		///// <returns>Resulting matrix = v * v', where v' -- is a transposed v.</returns>
-		//public static float[,] OuterProduct(float[] v)
-		//{
-		//	int size = v.Length;
-		//	var res = new float[size, size];
-
-		//	for (int i = 0; i < size; ++i)
-		//	{
-		//		res[i,i] = v[i] * v[i];
-		//		for (int j = i + 1; j < size; ++j)
-		//		{
-		//			res[i,j] = res[j,i] = v[i] * v[j];
-		//		}
-		//	}
-
-		//	return res;
-		//}
-
 		/// <summary>
 		/// [atomic]
 		/// 
@@ -2059,6 +2035,51 @@ namespace MentalAlchemy.Atoms
 				res[i] = (float)Math.Sqrt(v[i]);
 			}
 
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Linearly rescales values in the array to fall within the interval [min, max]
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+		public static float[] ToRange(float[] v, float min, float max)
+		{
+			var res = new float[v.Length];
+			var minv = Min(v);
+			var maxv = Max(v);
+			if (minv == maxv) return res;
+
+			var factor = (max - min) / (maxv - minv);
+			for (int i = 0; i < v.Length; ++i)
+			{
+				res[i] = factor * (v[i] - minv) + min;
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Linearly rescales values in the array to fall within the interval [0, 1]
+		/// </summary>
+		/// <param name="v"></param>
+		/// <returns></returns>
+		public static float[] ToRange01(float[] v)
+		{
+			var res = new float[v.Length];
+			var min = Min(v);
+			var max = Max(v);
+			if (min == max) return res;
+
+			var range = max - min;
+			var factor = 1 / range;
+			for (int i = 0; i < v.Length; ++i)
+			{
+				res[i] = factor * (v[i] - min);
+			}
 			return res;
 		}
 

@@ -27,7 +27,8 @@ namespace Console
 	{
 		static void Main(string[] args)
 		{
-			MentalAlchemy.Tests.TestMachineLearning.TestRBM();
+			//MentalAlchemy.Tests.TestMachineLearning.TestRBM();
+			MentalAlchemy.Tests.TestMachineLearning.TestRBMImage();
 			//MentalAlchemy.Tests.TestAlgorithms.TestDilate();
 			//MentalAlchemy.Tests.TestAlgorithms.TestErode();
 			//MentalAlchemy.Tests.TestAlgorithms.TestErodePlain();
