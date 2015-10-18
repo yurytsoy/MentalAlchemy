@@ -27,6 +27,85 @@ namespace MentalAlchemy.Molecules.Music
 	{
 		#region - Conversion. -
 		/// <summary>
+		/// Does not consider accidentals.
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <returns></returns>
+		public static string OffsetToNoteString(int offset)
+		{
+			switch (offset)
+			{
+				case 0: return Pitches.C;
+				case 1: return Pitches.D;
+				case 2: return Pitches.E;
+				case 3: return Pitches.F;
+				case 4: return Pitches.G;
+				case 5: return Pitches.A;
+				case 6: return Pitches.B;
+			}
+			return "";
+		}
+
+		/// <summary>
+		/// Wrt accidentals
+		/// </summary>
+		/// <param name="offset"></param>
+		/// <returns></returns>
+		public static string OffsetToNoteStringAccs(int offset)
+		{
+			switch (offset)
+			{
+				case 0: return Pitches.C;
+				case 1: return Pitches.Csharp;
+				case 2: return Pitches.D;
+				case 3: return Pitches.Dsharp;
+				case 4: return Pitches.E;
+				case 5: return Pitches.F;
+				case 6: return Pitches.Fsharp;
+				case 7: return Pitches.G;
+				case 8: return Pitches.Gsharp;
+				case 9: return Pitches.A;
+				case 10: return Pitches.Asharp;
+				case 11: return Pitches.B;
+			}
+			return "";
+		}
+
+		public static Midi.Note[] ToNote(string[] notes)
+		{
+			var res = new Midi.Note[notes.Length];
+			for (int i = 0; i < notes.Length; ++i)
+			{
+				res[i] = new Midi.Note(notes[i]);
+			}
+			return res;
+		}
+
+		/// <summary>
+		/// Converts given frequency to note.
+		/// </summary>
+		/// <param name="freq"></param>
+		/// <returns></returns>
+		public static string ToNote(double freq)
+		{
+			var freqLogs = VectorMath.Log(Const.BaseFrequencies);
+			var inLog = Math.Log(freq);
+
+			var octave = (int)(inLog / freqLogs[0]);
+			VectorMath.MulInplace(freqLogs, octave);
+			var temp = VectorMath.Sub(freqLogs, inLog);
+			VectorMath.AbsInplace(temp);
+
+			var resIdx = VectorMath.IndexOfMin(temp);
+			var noteStr = MusicUtils.OffsetToNoteStringAccs(resIdx);
+			noteStr = noteStr.Insert(1, octave.ToString ());
+			return noteStr;
+			//var res = new Note();
+			//res.Pitch = new Pitch() { Octave = octave, Step = 0};
+			//res.
+		}
+
+		/// <summary>
 		/// Converts given string to a collection of pitches.
 		/// The string assumes that pitches are separated by either [separator] or space.
 		/// Alternatively the pitches can be written as one-character-notes from a set {C, D, ..., B}.
@@ -154,31 +233,6 @@ namespace MentalAlchemy.Molecules.Music
 			return res;
 		}
 		
-		public static Midi.Note[] ToMidi(string[] notes)
-		{
-			var res = new Midi.Note[notes.Length];
-			for (int i = 0; i < notes.Length; ++i)
-			{
-				res[i] = new Midi.Note(notes[i]);
-			}
-			return res;
-		}
-
-		public static string OffsetToNoteString(int offset)
-		{
-			switch (offset)
-			{
-				case 0: return Pitches.C;
-				case 1: return Pitches.D;
-				case 2: return Pitches.E;
-				case 3: return Pitches.F;
-				case 4: return Pitches.G;
-				case 5: return Pitches.A;
-				case 6: return Pitches.B;
-			}
-			return "";
-		}
-
 		public static string ToString(Midi.Pitch[] pitches, string separator = "\t")
 		{
 			var res = pitches[0].ToString();
@@ -198,7 +252,7 @@ namespace MentalAlchemy.Molecules.Music
 			{
 				noteStr[i] = OffsetToNoteString(ContextRandom.Next(7));
 			}
-			var res = ToMidi(noteStr);
+			var res = ToNote(noteStr);
 			return res;
 		}
 
@@ -341,7 +395,7 @@ namespace MentalAlchemy.Molecules.Music
 		} 
 		#endregion
 
-		#region - Pitches reterival. -
+		#region - Pitches retreival. -
 		public static Midi.Pitch[] GetPitchesOneLineOctaveSimple()
 		{
 			var res = new Midi.Pitch[7];

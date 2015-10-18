@@ -78,7 +78,7 @@ namespace Generator.Controls
 
 		private void PlayBtn_Click(object sender, RoutedEventArgs e)
 		{
-			var notes = MusUtils.ToMidi(NotesBox.Text.Split(','));
+			var notes = MusUtils.ToNote(NotesBox.Text.Split(','));
 			if (PlayBtn.Content == PLAY)
 			{
 				PlayBtn.Content = STOP;

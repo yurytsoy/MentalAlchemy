@@ -29,7 +29,8 @@ namespace MentalAlchemy.Tests
 
 		public static void TestRBMImage()
 		{
-			var bmp = (Bitmap)Bitmap.FromFile("lena_bw.png");
+			//var bmp = (Bitmap)Bitmap.FromFile("lena_bw.png");
+			var bmp = (Bitmap)Bitmap.FromFile("image0.tif");
 			int width = bmp.Width, height = bmp.Height;
 
 			var data = ImageProcessingElements.ToFloats(bmp, 0);

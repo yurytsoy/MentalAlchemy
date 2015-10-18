@@ -71,7 +71,7 @@ namespace MentalAlchemy.Molecules.Music
 			return res;
 		}
 		
-		public void CreateComposingNetwork (float connProb = 0.5f)
+		public void CreateComposingNetwork (float connProb = 0.5f, ActivationFunction actFunc = null)
 		{
 			// Create random weighted graph with predefined number of nodes and edges probability.
 			const int nodesCount = 7;	// = number of notes.
@@ -102,7 +102,7 @@ namespace MentalAlchemy.Molecules.Music
 			var activations = new Dictionary <int, ActivationFunction> ();
 			for (int i=inputsCount; i<inputsCount + nodesCount; ++i)
 			{
-				activations.Add (i, ActivationFunctions.Sigmoid);
+				activations.Add(i, actFunc ?? ActivationFunctions.Sigmoid);
 			}
 			
 			_ann = new FlexibleNeuralNetwork2 ();

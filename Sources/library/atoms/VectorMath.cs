@@ -463,6 +463,25 @@ namespace MentalAlchemy.Atoms
 		/// <summary>
 		/// [atomic]
 		/// 
+		/// Calculates median value for the given array.
+		/// </summary>
+		/// <param name="v">Input array.</param>
+		/// <returns>Median value.</returns>
+		public static double Median(double[] v)
+		{
+			var sv = new List<double>(v);
+			Sorting.Sort(sv);
+			if (v.Length % 2 == 0)
+			{
+				var idx = sv.Count / 2;
+				return 0.5 * (sv[idx] + sv[idx - 1]);
+			}
+			return sv[sv.Count / 2];
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
 		/// Returns vector of means for each array in the given list.
 		/// </summary>
 		/// <param name="v">Input list of arrays.</param>
@@ -1035,6 +1054,28 @@ namespace MentalAlchemy.Atoms
 		public static int IndexOfMin(float[] data)
 		{
 			float min = data[0];
+			int minIdx = 0;
+			for (int i = 1; i < data.Length; ++i)
+			{
+				if (data[i] < min)
+				{
+					min = data[i];
+					minIdx = i;
+				}
+			}
+			return minIdx;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Returns index of the first minimal element in the given array.
+		/// </summary>
+		/// <param name="data">Array.</param>
+		/// <returns>Index of the first minimal element.</returns>
+		public static int IndexOfMin(double[] data)
+		{
+			var min = data[0];
 			int minIdx = 0;
 			for (int i = 1; i < data.Length; ++i)
 			{
@@ -1651,6 +1692,48 @@ namespace MentalAlchemy.Atoms
 		/// [atomic]
 		/// 
 		/// Element-wise substraction of two vectors.
+		/// </summary>
+		/// <param name="v1">1st vector.</param>
+		/// <param name="v2">2nd vector.</param>
+		/// <returns>Resulting vector (v1 - v2).</returns>
+		public static double[] Sub(double[] v1, double[] v2)
+		{
+			int size = v1.Length;
+			var res = new double[size];
+
+			for (int i = 0; i < size; i++)
+			{
+				res[i] = v1[i] - v2[i];
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Element-wise substraction of two vectors, with the second vector being a constant.
+		/// </summary>
+		/// <param name="v1">1st vector.</param>
+		/// <param name="v2">2nd vector.</param>
+		/// <returns>Resulting vector (v1 - v2).</returns>
+		public static double[] Sub(double[] v1, double v2)
+		{
+			int size = v1.Length;
+			var res = new double[size];
+
+			for (int i = 0; i < size; i++)
+			{
+				res[i] = v1[i] - v2;
+			}
+
+			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Element-wise substraction of two vectors.
 		/// The result is written into the first argument vector.
 		/// </summary>
 		/// <param name="v1">1st vector.</param>
@@ -1726,6 +1809,16 @@ namespace MentalAlchemy.Atoms
 			return Mul(v, 1.0f / arg);
 		}
 
+		public static double[] Log(IList<double> v)
+		{ 
+			var res = new double[v.Count];
+			for (int i = 0; i < res.Length; ++i )
+			{
+				res[i] = Math.Log(v[i]);
+			}
+			return res;
+		}
+
 		/// <summary>
 		/// [atomic]
 		/// 
@@ -1765,6 +1858,18 @@ namespace MentalAlchemy.Atoms
 		/// Multiplies vector elements by a given number and updates input vector.
 		/// </summary>
 		public static void MulInplace(float[] v, float num)
+		{
+			for (int i = 0; i < v.Length; ++i)
+			{
+				v[i] *= num;
+			}
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// Multiplies vector elements by a given number and updates input vector.
+		/// </summary>
+		public static void MulInplace(double[] v, double num)
 		{
 			for (int i = 0; i < v.Length; ++i)
 			{
@@ -2160,6 +2265,23 @@ namespace MentalAlchemy.Atoms
 				}
 			}
 			return res;
+		}
+
+		/// <summary>
+		/// [atomic]
+		/// 
+		/// Computes absolute values for elements from the given array and update the input.
+		/// </summary>
+		/// <param name="v">Input array.</param>
+		public static void AbsInplace(double[] v)
+		{
+			for (int i = 0; i < v.Length; i++)
+			{
+				if (v[i] < 0)
+				{
+					v[i] = -v[i];
+				}
+			}
 		}
 
 		/// <summary>

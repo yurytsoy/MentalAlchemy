@@ -36,6 +36,6 @@ namespace MentalAlchemy.Molecules.Music
 		public int Octave;
 	}
 
-	public enum NoteStep { C, D, E, F, G, H, A, B };
+	public enum NoteStep { C, D, E, F, G, A, B };
 	public enum NoteType { Whole, Half, Quarter, Eighth, Sixteenth, ThirtySecondth, FortySixth };
 }

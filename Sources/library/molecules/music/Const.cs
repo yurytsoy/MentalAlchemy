@@ -83,6 +83,20 @@ namespace MentalAlchemy.Molecules.Music
 	{
 		public const string MIDI_FILE_FILTER = "Midi files (*.mid)|*.mid|All files (*.*)|*.*";
 		public const string SAVE_MIDI_FILE_FILTER = "*.mid|*.mid";
+
+		public static double[] BaseFrequencies = new[] { 16.351,	// C0
+												17.324,	// C0#/D0b
+												18.354,	// D0
+												19.445,	// D0#/E0b
+												20.601,	// E0
+												21.827,	// F0
+												23.124,	// F0#/G0b
+												24.499,	// G0
+												25.956,	// G0#/A0b
+												27.500,	// A0
+												29.135,	// A0#/B0b
+												30.868	// B0
+												};
 	}
 }
 

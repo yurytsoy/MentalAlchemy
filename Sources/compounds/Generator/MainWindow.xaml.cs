@@ -37,6 +37,7 @@ using MentalAlchemy.Molecules.Music;
 using MentalAlchemy.Compounds;
 
 using MusUtils = MentalAlchemy.Molecules.Music.MusicUtils;
+using MentalAlchemy.Molecules;
 
 namespace Generator
 {
@@ -63,7 +64,7 @@ namespace Generator
 			// check whether midi file is available.
 			if (string.IsNullOrEmpty(midiFile))
 			{	// make random composer.
-				_composer.CreateComposingNetwork(connProb: 0.7f);
+				_composer.CreateComposingNetwork(connProb: 0.7f, actFunc: ActivationFunctions.SigmoidProbBinary);
 			}
 			else
 			{	//  train from a midi file.
@@ -74,7 +75,7 @@ namespace Generator
 
 		private void PlayOriginal_Click(object sender, RoutedEventArgs e)
 		{
-			var rand = MusicUtils.RandomFromOffsets(32);
+			var rand = MusicUtils.RandomFromOffsets( int.Parse (CompLengthBox.Text));
 			_player.Play(rand);
 		}
 
@@ -96,7 +97,7 @@ namespace Generator
 		{
 			if (_player.IsBusy) return;
 
-			var notes = MusUtils.ToMidi(NotesBox.Text.Split(','));
+			var notes = MusUtils.ToNote(NotesBox.Text.Split(','));
 			_player.Play(notes);
 		} 
 		#endregion

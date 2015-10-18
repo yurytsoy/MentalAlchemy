@@ -15,14 +15,25 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EarTrainer", "compounds\Ear
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bins", "bins", "{9EAB0445-3F1B-41D9-8A81-FA2A2B3F074F}"
 	ProjectSection(SolutionItems) = preProject
+		bins\Accord.Audio.DirectSound.dll = bins\Accord.Audio.DirectSound.dll
+		bins\Accord.Audio.dll = bins\Accord.Audio.dll
+		bins\Accord.Controls.dll = bins\Accord.Controls.dll
+		bins\Accord.dll = bins\Accord.dll
+		bins\Accord.Math.dll = bins\Accord.Math.dll
 		bins\alglibnet2.dll = bins\alglibnet2.dll
 		bins\AlphaTab.Core.dll = bins\AlphaTab.Core.dll
 		bins\encog-core-cs.dll = bins\encog-core-cs.dll
 		bins\MathNet.Iridium.dll = bins\MathNet.Iridium.dll
 		bins\Midi.dll = bins\Midi.dll
+		bins\SharpDX.DirectSound.dll = bins\SharpDX.DirectSound.dll
+		bins\SharpDX.dll = bins\SharpDX.dll
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITest", "compounds\UITest\UITest.csproj", "{A6F5DEC3-3438-4BDD-9316-B716154DD9F2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{D8154B7D-2A7C-4C62-8897-0B7F7AD0AFAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "audiotest", "compounds\audiotest\audiotest.csproj", "{A135D6A4-F402-4932-9C59-79F9A0D2030D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,8 +65,16 @@ Global
 		{A6F5DEC3-3438-4BDD-9316-B716154DD9F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6F5DEC3-3438-4BDD-9316-B716154DD9F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6F5DEC3-3438-4BDD-9316-B716154DD9F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A135D6A4-F402-4932-9C59-79F9A0D2030D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A135D6A4-F402-4932-9C59-79F9A0D2030D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A135D6A4-F402-4932-9C59-79F9A0D2030D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A135D6A4-F402-4932-9C59-79F9A0D2030D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A6F5DEC3-3438-4BDD-9316-B716154DD9F2} = {D8154B7D-2A7C-4C62-8897-0B7F7AD0AFAD}
+		{A135D6A4-F402-4932-9C59-79F9A0D2030D} = {D8154B7D-2A7C-4C62-8897-0B7F7AD0AFAD}
 	EndGlobalSection
 EndGlobal

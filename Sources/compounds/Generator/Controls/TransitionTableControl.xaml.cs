@@ -49,7 +49,7 @@ namespace Generator.Controls
 
 		private void PlayBtn_Click(object sender, RoutedEventArgs e)
 		{
-			var notes = MusUtils.ToMidi(ResultBox.Text.Split (','));
+			var notes = MusUtils.ToNote(ResultBox.Text.Split (','));
 			var res = "";
 			foreach (var note in notes)
 			{

@@ -31,9 +31,8 @@ namespace MentalAlchemy.Tests
 		{
 			var comp = new TransitionTableComposer ();
 			var notes = comp.Compose ();
-			var midi = MusUtils.ToMidi (notes);
-
-
+			var midi = MusUtils.ToNote (notes);
+			
 			var notesStr = VectorMath.ConvertToString (notes, ',');
 			Console.WriteLine ("Resulting notes:");
 			Console.WriteLine (notesStr);
